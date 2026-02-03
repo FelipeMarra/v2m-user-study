@@ -1,16 +1,13 @@
 import random
 
 from flask import Flask
-
-from flask import request, jsonify
-from flask import abort
+from flask import request
 from flask import render_template, redirect, url_for
 
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 
 # Define host name
-sever_name="haai.cs.ualberta.ca:5000"
+sever_name="localhost:5000"
 
 # Connect with database
 database_url = "localhost:27017"
@@ -55,26 +52,39 @@ def index():
     # Randomize pieces order
     random.shuffle(pieces)
 
-    return render_template('index.html', experiment=min_experiment,
-                                         order=pieces,
-                                         sever_name=sever_name)
+    return render_template(
+        'index.html', 
+        experiment=min_experiment,
+        order=pieces,
+        sever_name=sever_name
+    )
 
 @app.route('/evaluate/<experiment_id>/<piece>')
 def evaluate(experiment_id, piece):
     experiment = experiments_col.find_one({"_id": experiment_id})
-    return render_template('evaluate.html', piece=experiment[piece],
-                                      sever_name=sever_name)
+
+    return render_template(
+        'evaluate.html', 
+        piece=experiment[piece],
+        sever_name=sever_name
+    )
 
 @app.route('/test/<test_id>')
 def test(test_id):
     if int(test_id) == 1:
-        return render_template('test.html', piece='static/test/e2_real_human_4.mp3',
-                                            q1=1, q2=5, q3=5,
-                                            sever_name=sever_name)
+        return render_template(
+            'test.html', 
+            piece='static/audio/human/e2_real_human_4.mp3',
+            q1=1, q2=5, q3=5,
+            sever_name=sever_name
+        )
     elif int(test_id) == 2:
-        return render_template('test.html', piece='static/test/e4_real_human_2.mp3',
-                                            q1=5, q2=2, q3=5,
-                                            sever_name=sever_name)
+        return render_template(
+            'test.html', 
+            piece='static/audio/human/e4_real_human_2.mp3',
+            q1=5, q2=2, q3=5,
+            sever_name=sever_name
+        )
 
 @app.route('/profile')
 def profile():
@@ -111,8 +121,14 @@ def end():
             result["xp"]       = request.form.get("xp")
             result["comments"] = request.form.get("comments")
 
-            insert_result = results_col.insert_one(result);
-            return redirect(url_for('end', evaluation_id=insert_result.inserted_id,
-                                           sever_name=sever_name))
+            insert_result = results_col.insert_one(result)
+
+            return redirect(
+                url_for(
+                    'end', 
+                    evaluation_id=insert_result.inserted_id,
+                    sever_name=sever_name
+                )
+            )
     else:
         return render_template('end.html', sever_name=sever_name)

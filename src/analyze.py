@@ -4,7 +4,6 @@ import argparse
 import numpy as np
 
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 
 # Define host name
 sever_name="localhost:5000"

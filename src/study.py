@@ -90,14 +90,16 @@ if __name__ == "__main__":
     audio_files = traverse_dir(
         args.path_audio,
         is_sort=True,
-        extension='mp3')
+        extension='mp3'
+    )
 
     study = retrieve_study(audio_files)
 
     test_files = traverse_dir(
         args.path_test,
         is_sort=True,
-        extension='mp3')
+        extension='mp3'
+    )
 
     for experiment in study:
         # Include test piece in the experiment
