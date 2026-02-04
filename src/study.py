@@ -3,15 +3,11 @@ import argparse
 import random
 from pymongo import MongoClient
 
-# Define host name
-sever_name="localhost:5000"
-
 # Connect with database
 database_url = "localhost:27017"
 database = MongoClient(database_url)
 
 # Create database
-mydb = database["user_study_test"]
 experiments_col = database["user_study_test"]["experiments"]
 
 def traverse_dir(
@@ -22,7 +18,8 @@ def traverse_dir(
         is_pure=False,
         verbose=False,
         is_sort=False,
-        is_ext=True):
+        is_ext=True
+    ):
 
     if verbose:
         print('[*] Scanning...')
@@ -33,8 +30,8 @@ def traverse_dir(
             if file.endswith(extension):
                 if (amount is not None) and (cnt == amount):
                     break
-                if str_ is not None:
-                    if str_ not in file:
+
+                if str_ is not None and str_ not in file:
                         continue
 
                 mix_path = os.path.join(root, file)
@@ -43,10 +40,13 @@ def traverse_dir(
                 if not is_ext:
                     ext = pure_path.split('.')[-1]
                     pure_path = pure_path[:-(len(ext)+1)]
+
                 if verbose:
                     print(pure_path)
+
                 file_list.append(pure_path)
                 cnt += 1
+
     if verbose:
         print('Total: %d files' % len(file_list))
         print('Done!!!')
@@ -58,24 +58,28 @@ def traverse_dir(
 
 def retrieve_study(file_list):
     study = {}
-    for f in audio_files:
+    for f in file_list:
         f_basename = os.path.splitext(os.path.basename(f))[0]
 
         print(f_basename)
 
-        experiment_emotion = f_basename.split('_')[0]
         experiment_system = f_basename.split('_')[2]
         experiment_index = f_basename.split('_')[3]
 
         experiment_key = (experiment_system, experiment_index)
         if experiment_key not in study:
-            study[experiment_key] = {'_id': '{}_{}'.format(experiment_system, experiment_index),  'system': experiment_system, 'pieces': []}
+            study[experiment_key] = {
+                '_id': f'{experiment_system}_{experiment_index}',  
+                'system': experiment_system, 
+                'pieces': []
+            }
 
         study[experiment_key]['pieces'].append(f)
 
     for experiment in study:
         for i, piece in enumerate(study[experiment]['pieces']):
-            study[experiment]['piece_{}'.format(i+1)] = piece
+            study[experiment][f'piece_{i+1}'] = piece
+
         del study[experiment]['pieces']
 
     return study

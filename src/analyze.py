@@ -1,12 +1,8 @@
 import os
 import csv
-import argparse
 import numpy as np
 
 from pymongo import MongoClient
-
-# Define host name
-sever_name="localhost:5000"
 
 # Connect with database
 database_url = "localhost:27017"

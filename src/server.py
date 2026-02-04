@@ -7,7 +7,9 @@ from flask import render_template, redirect, url_for
 from pymongo import MongoClient
 
 # Define host name
-sever_name="localhost:5000"
+# naming this as localhost:500 might make the index.html address be 127.0.0.1:5000
+# and the other pages be localhost:500, which will mess with the localStorage
+sever_name="127.0.0.1:5000" 
 
 # Connect with database
 database_url = "localhost:27017"
@@ -32,7 +34,6 @@ def page_not_found(e):
 @app.route('/')
 def index():
     experiments = experiments_col.find({})
-    experiments_to_evaluate = []
 
     experiment_counts = {}
     for e in experiments:

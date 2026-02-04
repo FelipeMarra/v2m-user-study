@@ -58,19 +58,19 @@
 
                             <div id="audioplayer">
                               <div class="container">
-                                 <div class="row">
-                                   <div class="col-2">
-                                     <!-- <input type="button" id="pButton"  /> -->
-                                     <div id="pButton">
-                                       <img id="pButtonImg" src="http://{{ sever_name }}/static/imgs/play-64x64.png"/>
-                                     </div>
-                                   </div>
-                                   <div class="col">
-                                     <div id="timeline">
-                                       <div id="playhead"></div>
-                                     </div>
-                                   </div>
-                                 </div>
+                                <div class="row"> 
+                                  <div class="col-2">
+                                    <!-- <input type="button" id="pButton"  /> -->
+                                    <div id="pButton">
+                                      <img id="pButtonImg" src="http://{{ sever_name }}/static/imgs/play-64x64.png"/>
+                                    </div>
+                                  </div>
+                                  <div class="col">
+                                    <div id="timeline">
+                                      <div id="playhead"></div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                     </div>
@@ -314,9 +314,9 @@
                         <div id="ppage-back" class="progress bg-secondary" style="height: 10px;">
                               <div id="ppage" class="progress-bar" role="progressbar"></div>
                         </div>
-                   </div>
+                    </div>
 
-                   <div class="col-6">
+                    <div class="col-6">
                         <label id="npage">Page I of N</label>
                     </div>
                 </div>
@@ -493,16 +493,16 @@
 
   //Play and Pause
   function play() {
-       // start music
-       if (music.paused) {
-           music.play();
-           // remove play, add pause
-           pButtonImg.src = "http://{{ sever_name }}/static/imgs/pause-64x64.png";
-       } else { // pause music
-           music.pause();
-           // remove pause, add play
-           pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png"
-       }
+    // start music
+    if (music.paused) {
+      music.play();
+      // remove play, add pause
+      pButtonImg.src = "http://{{ sever_name }}/static/imgs/pause-64x64.png";
+    } else { // pause music
+      music.pause();
+      // remove pause, add play
+      pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png"
+    }
   }
 
   // play button event listenter
