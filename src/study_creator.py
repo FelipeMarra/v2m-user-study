@@ -1,4 +1,4 @@
-import random
+from itertools import combinations
 
 from pymongo import MongoClient
 
@@ -9,26 +9,45 @@ database_url = "localhost:27017"
 database = MongoClient(database_url)
 
 # Create database
-experiments_col = database["user_study_test"]["experiments"]
+pick_one_col = database["user_study_test"]["control_pick_one"]
+models_comb_col = database["user_study_test"]["control_models_combinations"]
 
-def retrieve_study(t:StudyTemplate, seed:int):
-    study = {}
-    for model in t.models:
-        print(model.path)
+def register_study(t:StudyTemplate):
+    # Register the pick_one_dict with the pick_one_keys, the list of contents inside each key
+    # and a corresponding list to keep track of the amount of times that each content was visited
+    for idx, row in enumerate(t._pick_one_dict.items()):
+        key, values = row
 
-        study[model.name] = {
-            '_id': f'{model.name}_{seed}',
-            'pieces': [str(content) for content in model.contents]
+        pick_one_dict = {
+            '_id': idx,
+            'name': key,
+            'contents': [str(content) for content in values],
+            'visits': [0 for _ in values]
         }
 
-    return study
+        pick_one_col.insert_one(pick_one_dict)
+
+    print(f"Registered {idx+1} pick_one rows.\n\tThe last one is {pick_one_dict}\n")
+
+    # Register model_combintaions with idx, number of times it was visited and the list of models in the combination
+    model_combintaions = combinations(t.models, t.models_comb)
+
+    for idx, models in enumerate(model_combintaions):
+        models_comb_dict = {
+            '_id': idx,
+            'visits': 0,
+            'names': [model.name for model in models],
+            'paths': [str(model.path.relative_to(t.src_dir)) for model in models]
+        }
+
+        models_comb_col.insert_one(models_comb_dict)
+
+    print(f"Registered {idx+1} model combinations.\n\tThe last one is {models_comb_dict}\n")
 
 def main():
-    seed = 42
-    random.seed(42)
-
-    kojiGen = StudyTemplate(
+    koji_gen = StudyTemplate(
         name="KojiGen",
+        models_comb=3,
         ends_with="_gen.mp4",
         levels = [
             Level("Model", LevelType.MODEL),
@@ -37,10 +56,7 @@ def main():
         ]
     )
 
-    study = retrieve_study(kojiGen, seed)
-
-    for experiment in study:
-        experiments_col.insert_one(study[experiment])
+    register_study(koji_gen)
 
 if __name__ == "__main__":
     main()

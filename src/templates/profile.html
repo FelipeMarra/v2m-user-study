@@ -375,7 +375,7 @@
           return;
         }
 
-        let experiment = localStorage.getItem("experiment");
+        let experiment = JSON.parse(localStorage.getItem("experiment"));
         let order = localStorage.getItem("order").split(',');
 
         // Compute paging

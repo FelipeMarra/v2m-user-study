@@ -149,8 +149,10 @@
           localStorage.clear();
 
           // Load random sequence of pieces
-          let experiment = JSON.parse('{{experiment | tojson}}')._id;
+          let experiment = JSON.parse('{{experiment | tojson}}');
           let order = JSON.parse('{{order | tojson}}');
+
+          console.log("SAVING XP", experiment)
 
           // Compute paging
           let npage = document.getElementById("npage");
@@ -161,7 +163,7 @@
 
           // Init next_piece variable
           localStorage.setItem("test_index", 1);
-          localStorage.setItem("experiment", experiment);
+          localStorage.setItem("experiment", JSON.stringify(experiment));
           localStorage.setItem("order", order);
       }
   </script>

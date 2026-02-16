@@ -1,6 +1,6 @@
 let pieceEnded = false;
 
-var music = document.getElementById('pieceAudio'); // id for audio element
+var music = document.getElementById('pieceAudio') ? document.getElementById('pieceAudio') : document.getElementById('pieceVideo'); // id for audio element
 var duration = music.duration; // Duration of audio clip, calculated here for embedding purposes
 var pButton = document.getElementById('pButton'); // play button
 var pButtonImg = document.getElementById('pButtonImg'); // play button image
@@ -15,10 +15,10 @@ music.addEventListener("timeupdate", timeUpdate, false);
 
 // makes timeline clickable
 timeline.addEventListener("click", function (event) {
-      // Only allow piece drag after finishing for the first time
-      if(!pieceEnded) {
-        return;
-      }
+     // Only allow piece drag after finishing for the first time
+     if(!pieceEnded) {
+          return;
+     }
 
      moveplayhead(event);
      music.currentTime = duration * clickPercent(event);
@@ -39,9 +39,9 @@ var onplayhead = false;
 // mouseDown EventListener
 function mouseDown() {
       // Only allow piece drag after finishing for the first time
-      if(!pieceEnded) {
-        return;
-      }
+     if(!pieceEnded) {
+          return;
+     }
 
      onplayhead = true;
      window.addEventListener('mousemove', moveplayhead, true);
@@ -51,17 +51,17 @@ function mouseDown() {
 // mouseUp EventListener
 // getting input from all mouse clicks
 function mouseUp(event) {
-    // Only allow piece drag after finishing for the first time
-    if(!pieceEnded) {
-      return;
-    }
+     // Only allow piece drag after finishing for the first time
+     if(!pieceEnded) {
+          return;
+     }
 
      if (onplayhead == true) {
-         moveplayhead(event);
-         window.removeEventListener('mousemove', moveplayhead, true);
-         // change current time
-         music.currentTime = duration * clickPercent(event);
-         music.addEventListener('timeupdate', timeUpdate, false);
+          moveplayhead(event);
+          window.removeEventListener('mousemove', moveplayhead, true);
+          // change current time
+          music.currentTime = duration * clickPercent(event);
+          music.addEventListener('timeupdate', timeUpdate, false);
      }
      onplayhead = false;
 }
@@ -69,21 +69,21 @@ function mouseUp(event) {
 // mousemove EventListener
 // Moves playhead as user drags
 function moveplayhead(event) {
-      // Only allow piece drag after finishing for the first time
-      if(!pieceEnded) {
-        return;
-      }
+     // Only allow piece drag after finishing for the first time
+     if(!pieceEnded) {
+          return;
+     }
 
      var newMargLeft = event.clientX - getPosition(timeline);
 
      if (newMargLeft >= 0 && newMargLeft <= timelineWidth) {
-         playhead.style.marginLeft = newMargLeft + "px";
+          playhead.style.marginLeft = newMargLeft + "px";
      }
      if (newMargLeft < 0) {
-         playhead.style.marginLeft = "0px";
+          playhead.style.marginLeft = "0px";
      }
      if (newMargLeft > timelineWidth) {
-         playhead.style.marginLeft = timelineWidth + "px";
+          playhead.style.marginLeft = timelineWidth + "px";
      }
 }
 
@@ -93,8 +93,8 @@ function timeUpdate() {
      var playPercent = timelineWidth * (music.currentTime / duration);
      playhead.style.marginLeft = playPercent + "px";
      if (music.currentTime == duration) {
-         pButton.className = "";
-         pButton.className = "fas fa-play";
+          pButton.className = "";
+          pButton.className = "fas fa-play";
      }
 }
 

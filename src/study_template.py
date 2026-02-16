@@ -38,12 +38,13 @@ class ModelData:
         self.contents:tp.List[Path] = []
 
 class StudyTemplate:
-    def __init__(self, name:str, ends_with:str, levels:tp.List[Level]) -> None:
+    def __init__(self, name:str, ends_with:str, models_comb:int, levels:tp.List[Level]) -> None:
         self.name = name
 
         self.src_dir = Path(__file__).resolve().parent
         self.experiments_dir = self.src_dir.joinpath('./static/experiments')
         self.ends_with = ends_with
+        self.models_comb = models_comb
 
         self.models:tp.List[ModelData] = []
 
@@ -51,7 +52,6 @@ class StudyTemplate:
         self._explore_model_level(ends_with, levels)
         self._discover_pick_one_dict_keys()
         self._get_pick_one_values()
-        self._pick_one_value()
         self._set_models_paths()
 
     def _explore_model_level(self, ends_with:str, levels):
@@ -118,14 +118,6 @@ class StudyTemplate:
             else:
                 # If it's a file (a 'leaf' in the file sense), yield its absolute path
                 yield child.relative_to(relative_to)
-
-    def _pick_one_value(self):
-        new_dict:tp.Dict[str, tp.List[Path]] = {}
-
-        for key, value in self._pick_one_dict.items():
-            new_dict[key] = [random.choice(value)]
-
-        self._pick_one_dict = new_dict
 
     def _set_models_paths(self):
         for model in self.models:

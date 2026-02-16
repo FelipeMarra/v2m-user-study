@@ -74,12 +74,13 @@ src/static/experiments/
                 |_video.mp4
 ```
 
-## Template Creation
+# Template Creation
 In order to create the template that tells `study_creator.py` how to loop the folder structure, create a new intance of the Template class in `study_creator.py`'s `main()`. For KojiGen the Temaplate instance would be:
 
 ```python
-kojiGen = StudyTemplate(
+koji_gen = StudyTemplate(
     name="KojiGen",
+    models_comb=3,
     ends_with="_gen.mp4",
     levels = [
         Level("Model", LevelType.MODEL),
@@ -94,3 +95,10 @@ The temaplate receiveives a property called `levels`, which is a list of type `L
 For the models level onwards the current version of the `study_creator.py` expects a `LevelType.FOLDER` with the `force_folder` property set up untill the `PICK_ONE` level. In KojiGen, the senconde level - called Inference in the template - can have a `inference` and a `checkpoint` folder, where the `checkpoint` contains the model's checkpoint. For that reason we set  `force_folder` to `inference`, since is the inference folder that will contain the videos for the experiment.
 
 The `pick_one` property tell the `study_creator` to pick one file that ends with the string set in the `ends_with` property. In KojiGen, from the genre level - as shown in the [folder structure](#folder-structure) example - we want to retrieve one random video from one random game.
+
+# Generating a Study
+The `models_comb` property on the template determines how many models will be sorted for a single instance of an experiment. All possible combination of the models will be gerated according to the set amount of models. The database will keep a control of how many times each combination was used, and sort one among the less used. Each possible combination will receive a index, that will appear in the URL as the experiment ID related to the models.
+
+The `study_creator.py` also registers the name of the folders in the `LevelType.PICK_ONE`, with the list of contents inside each folder and a corresponding list to keep track of the amount of times that each content was visited.
+
+When an experiment is created the least used model combinations is combined with the least used content for each folder in the `PICK_ONE` level. In case of draw, uniform sample is used.

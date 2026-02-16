@@ -306,6 +306,7 @@
             <div class="col-4">
                 <button id="prevButton" type="button" class="btn-page btn border rounded bg-white" onclick="">Back</button>
                 <button id="nextButton" type="submit" class="btn-page btn border bg-white rounded">Next</button>
+                <button id="skipButton" type="button" class="btn-page btn border bg-white rounded">Skip Test</button>
             </div>
 
             <div class="col">
@@ -333,8 +334,9 @@
   <script>
   function main() {
       // Retrieve experiment data
-      let experiment = localStorage.getItem("experiment");
+      let experiment = JSON.parse(localStorage.getItem("experiment"));
       let order = localStorage.getItem("order").split(',');
+      console.log("order:", order)
       let testIndex = parseInt(localStorage.getItem("test_index"));
 
       // Compute paging
@@ -394,6 +396,29 @@
           window.location.href = 'http://{{ sever_name }}/test/1';
         }
       }
+
+      // TODO: REMOVE
+      let skipButton = document.getElementById('skipButton');
+      skipButton.onclick = function() {
+        localStorage.setItem("piece_index", 0);
+        let experiment = JSON.parse(localStorage.getItem("experiment"));
+        let order = localStorage.getItem("order").split(',');
+
+        // console.log('LOADING XP')
+        // Object.keys(experiment).forEach(key => {
+        //     console.log(key, experiment[key]);
+        // });
+
+        // console.log('order', order)
+
+        let order_experiment = experiment[order[0]]
+        let model_comb_key = order_experiment['model_comb_key'][0]
+        let model_comb_idx = order_experiment['model_comb_key'][1]
+        let pick_one_key = order_experiment['content_key'][0]
+        let content_idx = order_experiment['content_key'][1]
+
+        window.location.href = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
+      }
   }
 
   function saveForm() {
@@ -427,7 +452,7 @@
   }
 
   function validateForm() {
-      let experiment = localStorage.getItem("experiment");
+      let experiment = JSON.parse(localStorage.getItem("experiment"));
       let order = localStorage.getItem("order").split(',');
       let testIndex = parseInt(localStorage.getItem("test_index"));
 

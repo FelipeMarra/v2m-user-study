@@ -42,36 +42,58 @@
           <div class="card bg-white borderrounded">
               <div class="card-body mx-2">
               <small>
-                <label for=""><h6 id="piece-name">Listen to the video game music piece _i_: <sup class="required">*</sup></h6>
+                <label for="">
+                  <h6 id="piece-name">Listen to the video game music piece _i_: <sup class="required">*</sup></h6>
                 </label>
 
                 <div class="container">
-                    <div class="row justify-content-center">
-                            <audio id="pieceAudio" preload="true">
+                    <div class="col justify-content-center">
+                            <video id="pieceVideo" preload="true">
+                              <source src="http://{{ sever_name }}/{{ piece }}" type="video/mp4">
+                              Your browser does not support the video element.
+                            </video>
+
+                            <div id="videoplayer">
+                              <div class="container">
+                                  <div class="row">
+                                    <div class="col-2">
+                                      <div id="pButton">
+                                        <img id="pButtonImg" src="http://{{ sever_name }}/static/imgs/play-64x64.png"/>
+                                      </div>
+                                    </div>
+                                    <div class="col">
+                                      <div id="timeline">
+                                        <div id="playhead"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+
+                            <!-- <audio id="pieceAudio" preload="true">
                               <source src="http://{{ sever_name }}/{{ piece }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                             </audio>
 
                             <div id="audioplayer">
                               <div class="container">
-                                 <div class="row">
-                                   <div class="col-2">
-                                     <!-- <input type="button" id="pButton"  /> -->
-                                     <div id="pButton">
-                                       <img id="pButtonImg" src="http://{{ sever_name }}/static/imgs/play-64x64.png"/>
-                                     </div>
-                                   </div>
-                                   <div class="col">
-                                     <div id="timeline">
-                                       <div id="playhead"></div>
-                                     </div>
-                                   </div>
-                                 </div>
+                                  <div class="row">
+                                    <div class="col-2">
+                                      <div id="pButton">
+                                        <img id="pButtonImg" src="http://{{ sever_name }}/static/imgs/play-64x64.png"/>
+                                      </div>
+                                    </div>
+                                    <div class="col">
+                                      <div id="timeline">
+                                        <div id="playhead"></div>
+                                      </div>
+                                    </div>
+                                  </div>
                               </div>
-                            </div>
+                            </div> -->
                     </div>
                 </div>
-                </small>
+              </small>
               </div>
           </div>
 
@@ -314,11 +336,11 @@
                 <div class="row align-items-center justify-content-end">
                     <div class="col">
                         <div id="ppage-back" class="progress bg-secondary" style="height: 10px;">
-                              <div id="ppage" class="progress-bar" role="progressbar"></div>
+                            <div id="ppage" class="progress-bar" role="progressbar"></div>
                         </div>
-                   </div>
+                    </div>
 
-                   <div class="col-6">
+                    <div class="col-6">
                         <label id="npage">Page I of N</label>
                     </div>
                 </div>
@@ -344,12 +366,12 @@
       }
 
       // Retrieve experiment data
-      let experiment = localStorage.getItem("experiment");
+      let experiment = JSON.parse(localStorage.getItem("experiment"));
       let order = localStorage.getItem("order").split(',');
 
       // Retrieve current piece index
       let pieceIndex = parseInt(localStorage.getItem("piece_index"));
-      console.log(pieceIndex, order.length);
+      console.log('pieceIndex ', pieceIndex, 'order.length ', order.length);
 
       let question1Answer = localStorage.getItem(order[pieceIndex] + "_q1");
       let question2Answer = localStorage.getItem(order[pieceIndex] + "_q2");
@@ -426,7 +448,13 @@
         prevButton.onclick = function() {
           saveForm();
           localStorage.setItem("piece_index", pieceIndex - 1);
-          window.location.href = 'http://{{ sever_name }}/evaluate/' + experiment + '/' + order[pieceIndex - 1];
+          let order_experiment = experiment[order[pieceIndex - 1]]
+          let model_comb_key = order_experiment['model_comb_key'][0]
+          let model_comb_idx = order_experiment['model_comb_key'][1]
+          let pick_one_key = order_experiment['content_key'][0]
+          let content_idx = order_experiment['content_key'][1]
+
+          window.location.href = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
         }
       }
 
@@ -434,13 +462,33 @@
       let evaluateForm = document.getElementById('evaluate-form');
 
       if (pieceIndex < order.length - 1) {
-        evaluateForm.action = 'http://{{ sever_name }}/evaluate/' + experiment + '/' + order[pieceIndex + 1];
+        let order_experiment = experiment[order[pieceIndex + 1]]
+        let model_comb_key = order_experiment['model_comb_key'][0]
+        let model_comb_idx = order_experiment['model_comb_key'][1]
+        let pick_one_key = order_experiment['content_key'][0]
+        let content_idx = order_experiment['content_key'][1]
+
+        evaluateForm.action = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
       }
       else {
         evaluateForm.action = 'http://{{ sever_name }}/profile'
       }
 
-      let pieceAudio = document.getElementById("pieceAudio");
+      // Video Player
+      let pieceVideo = document.getElementById("pieceVideo");
+
+      pieceVideo.onended = function() {
+        pieceEnded = true;
+        document.getElementById("question1").hidden = false;
+      };
+
+      // // Audio Player
+      // let pieceAudio = document.getElementById("pieceAudio");
+      
+      // pieceAudio.onended = function() {
+        //   pieceEnded = true;
+        //   document.getElementById("question1").hidden = false;
+        // };
 
       let question1Input = document.getElementById("question1-input");
       let question2Input = document.getElementById("question2-input");
@@ -448,11 +496,6 @@
       let question4Input = document.getElementById("question4-input");
       let question5Input = document.getElementById("question5-input");
       let explanationInput = document.getElementById("explanationInput");
-
-      pieceAudio.onended = function() {
-        pieceEnded = true;
-        document.getElementById("question1").hidden = false;
-      };
 
       question1Input.onclick = function() {
         if (document.forms["evaluate-form"]["question1"].value &&
@@ -555,18 +598,17 @@
 
   //Play and Pause
   function play() {
-       // start music
-       if (music.paused) {
-           music.play();
-           // remove play, add pause
-           pButtonImg.src = "http://{{ sever_name }}/static/imgs/pause-64x64.png";
-       } else { // pause music
-           music.pause();
-           // remove pause, add play
-           pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png"
-       }
+      // start music
+      if (music.paused) {
+          music.play();
+          // remove play, add pause
+          pButtonImg.src = "http://{{ sever_name }}/static/imgs/pause-64x64.png";
+      } else { // pause music
+          music.pause();
+          // remove pause, add play
+          pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png"
+      }
   }
-
 
   // play button event listenter
   pButton.addEventListener("click", play);
