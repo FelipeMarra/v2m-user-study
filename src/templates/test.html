@@ -347,6 +347,15 @@
       ppage.style.width = (2/(order.length + 2) * 100) + "%";
 
       let pieceAudio = document.getElementById("pieceAudio");
+
+      pieceAudio.onended = function() {
+        pieceEnded = true;
+        document.getElementById("question1").hidden = false;
+
+        pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png";
+        playhead.style.backgroundColor = "black";
+      };
+
       let question1Input = document.getElementById("question1-input");
       let question2Input = document.getElementById("question2-input");
       let question3Input = document.getElementById("question3-input");
@@ -524,14 +533,6 @@
 
   // play button event listenter
   pButton.addEventListener("click", play);
-
-  music.onended = function() {
-    pieceEnded = true;
-    document.getElementById("question1").hidden = false;
-
-    pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png"
-    playhead.style.backgroundColor = "black";
-  };
 
   </script>
 </html>
