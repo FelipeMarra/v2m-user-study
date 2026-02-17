@@ -50,6 +50,7 @@
       <div class="p-1"></div>
 
       <form id="profile-form" class="needs-validation" action="http://{{ sever_name }}/end" method="POST">
+          <input type="hidden" name="experiment" id="experiment">
           <div class="card bg-white border rounded">
               <div class="card-body mx-2">
                 <small>
@@ -394,10 +395,19 @@
 
         prevButton.onclick = function() {
           localStorage.setItem("piece_index", pieceIndex - 1);
-          window.location.href = 'http://{{ sever_name }}/evaluate/' + experiment + '/' + order[pieceIndex - 1];
+
+          let order_experiment = experiment[order[pieceIndex - 1]]
+          let model_comb_key = order_experiment['model_comb_key'][0]
+          let model_comb_idx = order_experiment['model_comb_key'][1]
+          let pick_one_key = order_experiment['content_key'][0]
+          let content_idx = order_experiment['content_key'][1]
+
+          window.location.href = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
         }
 
-        $('#profile-form').append('<input type="hidden" name="' + "experiment" + '" value="' + experiment + '" />');
+        console.log(JSON.stringify(experiment))
+        document.getElementById('experiment').value = JSON.stringify(experiment);
+
         for (let piece of order) {
             let question1Answer = localStorage.getItem(piece + "_q1");
             $('#profile-form').append('<input type="hidden" name="' + piece + "_q1" + '" value="' + question1Answer + '" />');
@@ -434,6 +444,6 @@
             let question5Answer = localStorage.getItem("test_" + testIndex + "_q5");
             $('#profile-form').append('<input type="hidden" name="' + "test_" + testIndex + "_q5" + '" value="' + question5Answer + '" />');
         }
-     }
+    }
   </script>
 </html>

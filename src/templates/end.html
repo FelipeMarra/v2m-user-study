@@ -60,11 +60,11 @@
             }
         }
         else {
-          document.getElementById("evaluation_id").innerHTML = evaluationId;
+            document.getElementById("evaluation_id").innerHTML = evaluationId;
 
-          // Experiment is complete, erase saved information
-          localStorage.clear();
-          localStorage.setItem("evaluation_id", evaluationId);
+            // Experiment is complete, erase saved information
+            localStorage.clear();
+			localStorage.setItem("evaluation_id", evaluationId);
         }
     }
   </script>
