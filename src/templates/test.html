@@ -60,7 +60,6 @@
                               <div class="container">
                                 <div class="row"> 
                                   <div class="col-2">
-                                    <!-- <input type="button" id="pButton"  /> -->
                                     <div id="pButton">
                                       <img id="pButtonImg" src="http://{{ sever_name }}/static/imgs/play-64x64.png"/>
                                     </div>
@@ -397,19 +396,12 @@
         }
       }
 
-      // TODO: REMOVE
+      // #TODO: REMOVE
       let skipButton = document.getElementById('skipButton');
       skipButton.onclick = function() {
         localStorage.setItem("piece_index", 0);
         let experiment = JSON.parse(localStorage.getItem("experiment"));
         let order = localStorage.getItem("order").split(',');
-
-        // console.log('LOADING XP')
-        // Object.keys(experiment).forEach(key => {
-        //     console.log(key, experiment[key]);
-        // });
-
-        // console.log('order', order)
 
         let order_experiment = experiment[order[0]]
         let model_comb_key = order_experiment['model_comb_key'][0]

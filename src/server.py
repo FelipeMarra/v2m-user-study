@@ -49,7 +49,7 @@ def get_models_combination() -> tp.List[tp.Tuple[int, int]]:
 
     log_choosen = models_comb_col.find_one({'_id':chosen_combination})
 
-    if VERBOSE: print(f"Chosen Models:\n\t--> Comb Key: {chosen_combination}\n\t--> Paths: {log_choosen['paths']}")
+    if VERBOSE: print(f"Chosen Models:\n\t--> Comb Key: {chosen_combination}\n\t--> Paths: {log_choosen['paths']}") # type: ignore
 
     return models
 

@@ -48,7 +48,7 @@
 
                 <div class="container">
                     <div class="col justify-content-center">
-                            <video id="pieceVideo" preload="true">
+                            <video id="pieceVideo" preload="true" width="412" height="360">
                               <source src="http://{{ sever_name }}/{{ piece }}" type="video/mp4">
                               Your browser does not support the video element.
                             </video>
@@ -480,14 +480,19 @@
       pieceVideo.onended = function() {
         pieceEnded = true;
         document.getElementById("question1").hidden = false;
-      };
 
+        pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png";
+        playhead.style.backgroundColor = "black";
+      };
+      
       // // Audio Player
       // let pieceAudio = document.getElementById("pieceAudio");
       
       // pieceAudio.onended = function() {
         //   pieceEnded = true;
         //   document.getElementById("question1").hidden = false;
+        //  pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png";
+        //  playhead.style.backgroundColor = "black";
         // };
 
       let question1Input = document.getElementById("question1-input");
@@ -612,14 +617,6 @@
 
   // play button event listenter
   pButton.addEventListener("click", play);
-
-  music.onended = function() {
-    pieceEnded = true;
-    document.getElementById("question1").hidden = false;
-
-    pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png";
-    playhead.style.backgroundColor = "black";
-  };
   </script>
 
 </html>
