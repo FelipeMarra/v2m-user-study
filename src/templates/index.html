@@ -112,7 +112,7 @@
           </div>
         </div>
 
-        <form id="submitForm" action="http://{{ sever_name }}/test/1" method="GET">
+        <form id="submitForm" method="GET">
             <div class="row align-items-center mt-2 mb-2">
               <div class="col-4">
                   <!-- <button id="prevButton" type="button" class="btn-page btn border rounded bg-white" onclick="prevPage()">Back</button> -->
@@ -140,9 +140,11 @@
 
   <script>
       function main() {
+        document.getElementById("submitForm").action = "http://{{ sever_name }}/test/1"
+
         // Make sure localStorage is clear when the experiment starts
         localStorage.clear();
-        
+
         // Load random sequence of pieces
         let experiment = JSON.parse('{{experiment | tojson}}');
         let order = JSON.parse('{{order | tojson}}');
