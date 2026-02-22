@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,154 +17,155 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <title>KojiGen</title>
-  </head>
+</head>
 
-  <body onload="main()">
-      <div class="p-1"></div>
+<body onload="main()">
+	<div class="p-1"></div>
 
-      <div class="card bg-white text-dark border rounded">
-          <div class="card-header border-0 bg-primary"></div>
+	<div class="card bg-white text-dark border rounded">
+		<div class="card-header border-0 bg-primary"></div>
 
-          <div class="card-body mx-2">
-              <div id="header">
-                <img src="static/imgs/logo.png" class="img-fluid" alt="Responsive image" width="30%">
-                <h2 class="font-weight-normal">KojiGen: Video Encoding Methods for the Video-to-Music Task in a Gameplay Dataset</h2>
-                <br>
-              </div>
+		<div class="card-body mx-2">
+			<div id="header">
+			<img src="static/imgs/logo.png" class="img-fluid" alt="Responsive image" width="30%">
+			<h2 class="font-weight-normal">KojiGen: Video Encoding Methods for the Video-to-Music Task in a Gameplay Dataset</h2>
+			<br>
+			</div>
 
-              <div class="container">
-                <div class="row">
-                  <div class="col-sm">
-                    <p class="m-0 p-0 bold"><strong>Principal Investigator:</strong><br>
-                    Prof. Lucas N. Ferreira<br>
-                    Assistant Professor<br>
-                    Departamento de Ciência da Computação<br>
-                    Universidade Federal de Minas Gerais (UFMG)<br>
-                    Belo Horizonte, MG - Brazil<br>
-                    lferreira@dcc.ufmg.br
-                    </p><br>
-                  </div>
-                  <div class="col-sm">
-                    <p class="m-0 p-0 bold"><strong>Co-Investigator:</strong><br>
-                    Felipe F. Marra<br>
-                    MSc Student <br>
-                    Departamento de Informática <br>
-                    Universidade Federal de Viçosa (UFV) <br>
-                    Viçosa, MG - Brazil <br>
-                    felipe.marra@ufv.br
-                    </p><br>
-                  </div>
-                </div>
-              </div>
+			<div class="container">
+			<div class="row">
+				<div class="col-sm">
+				<p class="m-0 p-0 bold"><strong>Principal Investigator:</strong><br>
+				Prof. Lucas N. Ferreira<br>
+				Assistant Professor<br>
+				Departamento de Ciência da Computação<br>
+				Universidade Federal de Minas Gerais (UFMG)<br>
+				Belo Horizonte, MG - Brazil<br>
+				lferreira@dcc.ufmg.br
+				</p><br>
+				</div>
+				<div class="col-sm">
+				<p class="m-0 p-0 bold"><strong>Co-Investigator:</strong><br>
+				Felipe F. Marra<br>
+				MSc Student <br>
+				Departamento de Informática <br>
+				Universidade Federal de Viçosa (UFV) <br>
+				Viçosa, MG - Brazil <br>
+				felipe.marra@ufv.br
+				</p><br>
+				</div>
+			</div>
+			</div>
 
-              <p class="m-0 p-0 bold"><strong>Invitation to Participate:</strong><br>
-              You are invited to participate in this research study about music generation with Artificial Intelligence.<br>
-              </p><br>
+			<p class="m-0 p-0 bold"><strong>Invitation to Participate:</strong><br>
+			You are invited to participate in this research study about music generation with Artificial Intelligence.<br>
+			</p><br>
 
-              <p class="m-0 p-0 bold"><strong>Purpose of the Study:</strong><br>
-              From this research, we wish to learn if our systems for music generation can compose video game music with a given target gameplay video. We also want to measure the quality of the generated pieces with respect to video game music composed by professional musicians.
-              </p><br>
+			<p class="m-0 p-0 bold"><strong>Purpose of the Study:</strong><br>
+			From this research, we wish to learn if our systems for music generation can compose video game music with a given target gameplay video. We also want to measure the quality of the generated pieces with respect to video game music composed by professional musicians.
+			</p><br>
 
-              <p class="m-0 p-0 bold"><strong>Participation:</strong><br>
-              In this experiment, you will be asked to listen to <span id="n_pieces"></span> video game music pieces with 10s of duration and evaluate the emotion and quality you perceive in each one of them. Each evaluation is approximately 45 seconds long. The entire experiment takes approximately <span id="xp_duration"></span> minutes.
-              We strongly recommend the use of headphones during this study.
-              </p><br>
+			<p class="m-0 p-0 bold"><strong>Participation:</strong><br>
+			In this experiment, you will be asked to listen to <span id="n_pieces"></span> video game music pieces with 10s of duration and evaluate the emotion and quality you perceive in each one of them. Each evaluation is approximately 45 seconds long. The entire experiment takes approximately <span id="xp_duration"></span> minutes.
+			We strongly recommend the use of headphones during this study.
+			</p><br>
 
-              <p class="m-0 p-0 bold"><strong>Benefits:</strong><br>
-              There is no direct benefit to the participants taking part in the study.
-              </p><br>
+			<p class="m-0 p-0 bold"><strong>Benefits:</strong><br>
+			There is no direct benefit to the participants taking part in the study.
+			</p><br>
 
-              <p class="m-0 p-0 bold"><strong>Risks:</strong><br>
-              The risks associated with this study are equivalent to those of listening to music on a computer.
-              </p><br>
+			<p class="m-0 p-0 bold"><strong>Risks:</strong><br>
+			The risks associated with this study are equivalent to those of listening to music on a computer.
+			</p><br>
 
-              <p class="m-0 p-0 bold"><strong>Confidentiality and Anonymity:</strong><br>
-              The information that you will share will remain strictly confidential and will be used solely for the purposes of this research. The only people who will have access to the research data are the professor and students involved in this research (see names and contact information at the top). Your answers to open-ended questions may be used verbatim in presentations and publications, but neither you (nor your organization) will be identified. In order to minimize the risk of security breaches and to help ensure your confidentiality, we recommend that you use standard safety measures such as closing your browser and locking your screen or device when you are no longer using them / when you have completed the study. Results will be published in pooled (aggregate) format. Anonymity is guaranteed since you are not being asked to provide your name or any personal information.
-              </p><br>
+			<p class="m-0 p-0 bold"><strong>Confidentiality and Anonymity:</strong><br>
+			The information that you will share will remain strictly confidential and will be used solely for the purposes of this research. The only people who will have access to the research data are the professor and students involved in this research (see names and contact information at the top). Your answers to open-ended questions may be used verbatim in presentations and publications, but neither you (nor your organization) will be identified. In order to minimize the risk of security breaches and to help ensure your confidentiality, we recommend that you use standard safety measures such as closing your browser and locking your screen or device when you are no longer using them / when you have completed the study. Results will be published in pooled (aggregate) format. Anonymity is guaranteed since you are not being asked to provide your name or any personal information.
+			</p><br>
 
-              <!-- <p class="m-0 p-0 bold"><strong>Data Storage:</strong><br>
-              Electronic copies of the survey will be encrypted and stored on a password-protected computer in the Department of Computing Science at the University of Alberta.
-              </p><br> -->
+			<p class="m-0 p-0 bold"><strong>Voluntary Participation:</strong><br>
+			You are under no obligation to participate, and if you choose to participate, you may refuse to answer questions that you do not want to answer. Should you choose to withdraw midway through the electronic survey, simply close the link, and no responses will be included.  Given the anonymous nature of the survey, once you have submitted your responses it will no longer be possible to withdraw them from the study.
+			</p><br>
 
-              <!-- <p class="m-0 p-0 bold"><strong>Compensation:</strong><br>
-              There will be a compensation of USD $1.5 for your participation in this study, which will be paid via your Amazon Mechanical Turk account.
-              </p><br> -->
+			<p class="m-0 p-0 bold"><strong>Information about the Study Results:</strong><br>
+			The results of our experiments will not be available to the participants.
+			</p><br>
 
-              <p class="m-0 p-0 bold"><strong>Voluntary Participation:</strong><br>
-              You are under no obligation to participate, and if you choose to participate, you may refuse to answer questions that you do not want to answer. Should you choose to withdraw midway through the electronic survey, simply close the link, and no responses will be included.  Given the anonymous nature of the survey, once you have submitted your responses it will no longer be possible to withdraw them from the study.
-              </p><br>
+			<p class="m-0 p-0 bold"><strong>Contact Information:</strong><br>
+			If you have any questions or require more information about the study itself, you may contact the researchers at the e-mails mentioned herein.
+			</p><br>
 
-              <p class="m-0 p-0 bold"><strong>Information about the Study Results:</strong><br>
-              The results of our experiments will not be available to the participants.
-              </p><br>
+			<p>
+				Version Date: 20 Feb 2026
+			</p>
 
-              <p class="m-0 p-0 bold"><strong>Contact Information:</strong><br>
-              If you have any questions or require more information about the study itself, you may contact the researchers at the e-mails mentioned herein.
-              </p><br>
+			<p class="m-0 p-0 bold"><strong>Completion and submission of the survey means your consent to participate.</strong></p>
+			</small>
+		</div>
+	</div>
 
-              <p>
-              <!-- The plan for this study has been reviewed by a Research Ethics Board at the University of Alberta.  If you have any questions regarding your rights as a research participant or how the research is being conducted you may contact the Research Ethics Office at reoffice@ualberta.ca.<br><br> -->
-              Version Date: 20 Feb 2026
-              </p>
+	<form id="submitForm" method="GET">
+		<div class="row align-items-center mt-2 mb-2">
+			<div class="col-4">
+				<button id="nextButton" type="submit" class="btn-page btn border bg-white rounded">Next</button>
+			</div>
 
-              <p class="m-0 p-0 bold"><strong>Completion and submission of the survey means your consent to participate.</strong></p>
-              </small>
-          </div>
-        </div>
+			<div class="col">
+				<div class="row align-items-center justify-content-end">
+					<div class="col">
+						<div id="ppage-back" class="progress bg-secondary" style="height: 10px;">
+							<div id="ppage" class="progress-bar" role="progressbar"></div>
+						</div>
+					</div>
 
-        <form id="submitForm" method="GET">
-            <div class="row align-items-center mt-2 mb-2">
-              <div class="col-4">
-                  <!-- <button id="prevButton" type="button" class="btn-page btn border rounded bg-white" onclick="prevPage()">Back</button> -->
-                  <button id="nextButton" type="submit" class="btn-page btn border bg-white rounded">Next</button>
-              </div>
+					<div class="col-6">
+						<label id="npage">Page 1 of N</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 
-              <div class="col">
-                  <div class="row align-items-center justify-content-end">
-                      <div class="col">
-                          <div id="ppage-back" class="progress bg-secondary" style="height: 10px;">
-                              <div id="ppage" class="progress-bar" role="progressbar"></div>
-                          </div>
-                      </div>
+	<div class="p-4"></div>
+</body>
 
-                      <div class="col-6">
-                          <label id="npage">Page 1 of N</label>
-                      </div>
-                  </div>
-              </div>
-            </div>
-        </form>
-
-        <div class="p-4"></div>
-  </body>
-
-  <script>
-      function main() {
-        document.getElementById("submitForm").action = "http://{{ sever_name }}/test/1"
-
-        // Make sure localStorage is clear when the experiment starts
-        localStorage.clear();
-
-        // Load random sequence of pieces
-        let experiment = JSON.parse('{{experiment | tojson}}');
+<script>
+	function main() {
+        // Compute paging
         let order = JSON.parse('{{order | tojson}}');
 
         document.getElementById("n_pieces").innerHTML = order.length;
         document.getElementById("xp_duration").innerHTML = Math.round((order.length * 45)/60);
 
-        console.log("SAVING XP", experiment)
-
-        // Compute paging
         let npage = document.getElementById("npage");
-        npage.innerHTML = npage.innerHTML.replace("N", order.length + 4);
+        npage.innerHTML = npage.innerHTML.replace("N", order.length + 2);
 
         let ppage = document.getElementById("ppage");
         ppage.style.width = (1/(order.length + 2) * 100) + "%";
 
-        // Init next_piece variable
-        localStorage.setItem("test_index", 1);
+        // Make sure localStorage is clear when the experiment starts
+        localStorage.clear();
+
+        // Get random sequence of pieces
+        let experiment = JSON.parse('{{experiment | tojson}}');
+
+        // Set Next button action
+        let submitForm = document.getElementById("submitForm");
+
+		localStorage.setItem("piece_index", 0);
+
+		let order_experiment = experiment[order[0]]
+		let model_comb_key = order_experiment['model_comb_key'][0]
+		let model_comb_idx = order_experiment['model_comb_key'][1]
+		let pick_one_key = order_experiment['content_key'][0]
+		let content_idx = order_experiment['content_key'][1]
+
+		submitForm.action = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
+
+        // Save experiment and order of pieces
+        console.log("SAVING XP", experiment) //#TODO: Remove
+        console.log("SAVING ORDER", order) //#TODO: Remove
         localStorage.setItem("experiment", JSON.stringify(experiment));
         localStorage.setItem("order", order);
-      }
-  </script>
+	}
+</script>
 </html>

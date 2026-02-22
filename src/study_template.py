@@ -37,14 +37,22 @@ class ModelData:
         self.levels = levels
         self.contents:tp.List[Path] = []
 
+class LikertQuestion:
+    def __init__(self, header:str, options:tp.List[str]) -> None:
+        self.header = header
+        self.options = options
+
+        assert len(options) == 5, "len options in LikertQuestion should be == 5"
+
 class StudyTemplate:
-    def __init__(self, name:str, ends_with:str, models_comb:int, levels:tp.List[Level]) -> None:
+    def __init__(self, name:str, ends_with:str, models_comb:int, levels:tp.List[Level], questions:tp.List[LikertQuestion]) -> None:
         self.name = name
 
         self.src_dir = Path(__file__).resolve().parent
         self.experiments_dir = self.src_dir.joinpath('./static/experiments')
         self.ends_with = ends_with
         self.models_comb = models_comb
+        self.questions = questions
 
         self.models:tp.List[ModelData] = []
 

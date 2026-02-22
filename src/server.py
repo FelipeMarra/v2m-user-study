@@ -21,13 +21,14 @@ db = client["user_study_test"]
 
 pick_one_col = db["control_pick_one"]
 models_comb_col = db["control_models_combinations"]
+questions_col = db["questions"]
 results_col = db["results"]
 
 app = Flask(__name__)
 
 XP_MODEL_COMB_KEY = -1
 XP_CONTENTS_KEYS = -2
-VERBOSE = False
+VERBOSE = True
 
 def get_models_combination() -> tp.List[tp.Tuple[int, int]]:
     combination_visits = {}
@@ -98,7 +99,7 @@ def get_final_experiment_test(model_comb_key:tp.List[tp.Tuple[int, int]], contet
     counter = 0
 
     for model_key in model_comb_key[:2]:
-        for content_key in contets_keys[:1]:
+        for content_key in contets_keys[:2]:
             experiment[counter] = {
                 'model_comb_key': model_key,
                 'content_key': content_key
@@ -160,6 +161,19 @@ def index():
         sever_name=sever_name
     )
 
+def get_questions():
+    # Get questions
+    questions = [
+        {
+            '_id': question['_id'],
+            'header': question['header'],
+            'options': list(enumerate(question['options']))
+        } 
+        for question in questions_col.find({})
+    ]
+
+    return questions
+
 @app.route('/evaluate/<model_comb_key>/<model_comb_idx>/<pick_one_key>/<content_idx>')
 def evaluate(model_comb_key:str, model_comb_idx:str, pick_one_key:str, content_idx:str):
     model_path = models_comb_col.find_one({"_id": int(model_comb_key)})['paths'][int(model_comb_idx)] # type: ignore
@@ -167,33 +181,30 @@ def evaluate(model_comb_key:str, model_comb_idx:str, pick_one_key:str, content_i
 
     piece = os.path.join(model_path, content_path)
 
+    # Get questions
+    questions = get_questions()
+
+    print(f"\nEVAL QUESNTIONS: {questions}\n")
+
     return render_template(
         'evaluate.html', 
         piece=piece,
+        questions=questions,
         sever_name=sever_name
     )
 
-@app.route('/test/<test_id>') # type: ignore
-def test(test_id):
-    if int(test_id) == 1:
-        return render_template(
-            'test.html', 
-            piece='static/audio/human/e2_real_human_4.mp3',
-            q1=1, q2=5, q3=5,
-            sever_name=sever_name
-        )
-    elif int(test_id) == 2:
-        return render_template(
-            'test.html', 
-            piece='static/audio/human/e4_real_human_2.mp3',
-            q1=5, q2=2, q3=5,
-            sever_name=sever_name
-        )
-
 @app.route('/profile')
 def profile():
-    return render_template('profile.html', sever_name=sever_name)
+    # Get questions
+    questions = get_questions()
 
+    return render_template(
+        'profile.html', 
+        questions=questions,
+        sever_name=sever_name
+    )
+
+# End rout
 def increment_visits(model_comb_key:int, contets_keys:tp.List[tp.Tuple[int, int]]):
     # Increment model_comb_key visists
     model_comb_filter = {'_id': model_comb_key}
@@ -209,12 +220,10 @@ def increment_visits(model_comb_key:int, contets_keys:tp.List[tp.Tuple[int, int]
     for pick_one_key, content_key in contets_keys:
         pick_one_key = { '_id': pick_one_key }
 
-        # The arrayFilters specifies which array elements to update
         content_op = {
             '$inc': {f'visits.{content_key}': 1 }
         }
 
-        # Execute the update_one operation with array filters
         result = pick_one_col.update_one(pick_one_key, content_op)
 
         if VERBOSE: print(f"Pick One Key {pick_one_key} at Content {content_key} Visits Updated to {result.modified_count}")
@@ -233,21 +242,16 @@ def end():
 
             increment_visits(model_comb_key, contets_keys)
 
+            questions = get_questions()
+
             for key in experiment:
                 if key not in ['_id', str(XP_MODEL_COMB_KEY), str(XP_CONTENTS_KEYS)]:
-                    result[key + "_q1"] = request.form.get(key + "_q1")
-                    result[key + "_q2"] = request.form.get(key + "_q2")
-                    result[key + "_q3"] = request.form.get(key + "_q3")
-                    result[key + "_q4"] = request.form.get(key + "_q4")
-                    result[key + "_q5"] = request.form.get(key + "_q5")
-                    result[key + "_expl"] = request.form.get(key + "_expl")
+                    for question in questions:
+                        question_id = question['_id']
+                        question_key = f'{key}_q{question_id}'
 
-            for test in range(1, 3):
-                    result["test_{}_q1".format(test)] = request.form.get("test_{}_q1".format(test))
-                    result["test_{}_q2".format(test)] = request.form.get("test_{}_q2".format(test))
-                    result["test_{}_q3".format(test)] = request.form.get("test_{}_q3".format(test))
-                    result["test_{}_q4".format(test)] = request.form.get("test_{}_q4".format(test))
-                    result["test_{}_q5".format(test)] = request.form.get("test_{}_q5".format(test))
+                        result[question_key] = request.form.get(question_key)
+                        print(f"SAVING RESULT result[{question_key}] {result[question_key]}")
 
             result["ethnicity"] = request.form.get("ethnicity")
             result["language"] = request.form.get("language")

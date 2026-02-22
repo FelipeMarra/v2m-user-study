@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,313 +20,114 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
 
     <title>KojiGen</title>
-  </head>
+</head>
 
-  <body onload="main()">
-      <div class="p-1"></div>
+<body onload="main()">
+    <div class="p-1"></div>
 
-      <div class="card bg-white text-dark border rounded">
-          <div class="card-header border-0 bg-primary"></div>
+    <div class="card bg-white text-dark border rounded">
+        <div class="card-header border-0 bg-primary"></div>
 
-          <div class="card-body mx-2">
+        <div class="card-body mx-2">
             <div id="header">
-              <img src="http://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" alt="logo" width="30%">
-              <h2 class="font-weight-normal">KojiGen: Video Encoding Methods for the Video-to-Music Task in a Gameplay Dataset</h2>
-              <sup class="required">* Required</sup>
+                <img src="http://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" alt="logo" width="30%">
+                <h2 class="font-weight-normal">KojiGen: Video Encoding Methods for the Video-to-Music Task in a Gameplay Dataset</h2>
+                <sup class="required">* Required</sup>
             </div>
-          </div>
-      </div>
+        </div>
+    </div>
 
-      <div class="p-1"></div>
-        <form id="evaluate-form" class="needs-validation" action="" onsubmit="return validateForm()" method="GET">
-          <div class="card bg-white borderrounded">
-              <div class="card-body mx-2">
-              <small>
+    <div class="p-1"></div>
+
+    <form id="evaluate-form" class="needs-validation" action="" onsubmit="return validateForm()" method="GET">
+        <div class="card bg-white borderrounded">
+            <div class="card-body mx-2">
+            <small>
                 <label for="">
-                  <h6 id="piece-name">Listen to the video game music piece _i_: <sup class="required">*</sup></h6>
+                <h6 id="piece-name">Listen to the video game music piece _i_: <sup class="required">*</sup></h6>
                 </label>
 
                 <div class="container">
                     <div class="col justify-content-center">
                             <video id="pieceVideo" preload="true" width="412" height="360">
-                              <source src="http://{{ sever_name }}/{{ piece }}" type="video/mp4">
-                              Your browser does not support the video element.
+                            <source src="http://{{ sever_name }}/{{ piece }}" type="video/mp4">
+                            Your browser does not support the video element.
                             </video>
 
                             <div id="videoplayer">
-                              <div class="container">
-                                  <div class="row">
+                            <div class="container">
+                                <div class="row">
                                     <div class="col-2">
-                                      <div id="pButton">
+                                    <div id="pButton">
                                         <img id="pButtonImg" src="http://{{ sever_name }}/static/imgs/play-64x64.png"/>
-                                      </div>
+                                    </div>
                                     </div>
                                     <div class="col">
-                                      <div id="timeline">
+                                    <div id="timeline">
                                         <div id="playhead"></div>
-                                      </div>
                                     </div>
-                                  </div>
-                              </div>
+                                    </div>
+                                </div>
+                            </div>
                             </div>
 
                             <!-- <audio id="pieceAudio" preload="true">
-                              <source src="http://{{ sever_name }}/{{ piece }}" type="audio/mpeg">
+                            <source src="http://{{ sever_name }}/{{ piece }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                             </audio>
 
                             <div id="audioplayer">
-                              <div class="container">
-                                  <div class="row">
+                            <div class="container">
+                                <div class="row">
                                     <div class="col-2">
-                                      <div id="pButton">
+                                    <div id="pButton">
                                         <img id="pButtonImg" src="http://{{ sever_name }}/static/imgs/play-64x64.png"/>
-                                      </div>
+                                    </div>
                                     </div>
                                     <div class="col">
-                                      <div id="timeline">
+                                    <div id="timeline">
                                         <div id="playhead"></div>
-                                      </div>
                                     </div>
-                                  </div>
-                              </div>
+                                    </div>
+                                </div>
+                            </div>
                             </div> -->
                     </div>
                 </div>
-              </small>
-              </div>
-          </div>
+            </small>
+            </div>
+        </div>
 
-          <div class="p-1"></div>
+        {% for question in questions %}
+        <div class="p-1"></div>
 
-          <div id="question1" class="card bg-white borderrounded" hidden>
-              <div class="card-body mx-2">
+        <div id="question{{question['_id']}}" class="card bg-white borderrounded" hidden>
+            <div class="card-body mx-2">
                 <small>
-                  <div class="container">
-                      <div class="row justify-content-center">
-                        <div class="col-sm-4">
-                          <img src="http://{{ sever_name }}/static/imgs/circumplex-model.png" class="img-fluid" alt="circumplex model">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-sm">
+                                <label for="question{{question['_id']}}"><h6> {{question['header']}} <sup class="required">*</sup></h6></label>
+
+                                <div id="question{{question['_id']}}-input" class="likert" onclick="question_onclick({{question['_id']}})">
+                                    {% for op_value, op_txt in question['options'] %}
+                                        <div class="likert-option form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="question{{question['_id']}}" value={{op_value}} />
+                                            <label class="form-check-label">{{op_txt}}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-sm">
-                          <label for="question1"><h6>1. Is this piece negative or positive? <sup class="required">*</sup></h6></label>
+                    </div>
+                </small>
+            </div>
+        </div>
+        {% endfor %}
 
-                          <div id="question1-input" class="likert">
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question1" value="1" />
-                              <label class="form-check-label">Very Negative</label>
-                            </div>
+        <div class="p-1"></div>
 
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question1" value="2" />
-                              <label class="form-check-label">Slightly Negative</label>
-                            </div>
-
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question1" value="3" />
-                              <label class="form-check-label">Neutral</label>
-                            </div>
-
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question1" value="4" />
-                              <label class="form-check-label">Slightly Positive</label>
-                            </div>
-
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question1" value="5" />
-                              <label class="form-check-label">Very Positive</label>
-                            </div>
-                          </div>
-
-                          <div class="p-2"></div>
-
-                          <label for="question2"><h6>2. Is this piece mild or intense? <sup class="required">*</sup></h6></label>
-
-                          <div id="question2-input" class="likert">
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question2" value="1" />
-                              <label class="form-check-label">Very Mild</label>
-                            </div>
-
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question2" value="2" />
-                              <label class="form-check-label">Mild</label>
-                            </div>
-
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question2" value="3" />
-                              <label class="form-check-label">Neutral</label>
-                            </div>
-
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question2" value="4" />
-                              <label class="form-check-label">Intense</label>
-                            </div>
-
-                            <div class="likert-option form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="question2" value="5" />
-                              <label class="form-check-label">Very Intense</label>
-                            </div>
-                          </div>
-
-                          <div class="p-2"></div>
-
-                          <label for="explanation"><h6>Briefly explain your answers based on the emotions in the figure: <sup class="required">*</sup></h6></label>
-                          <input id="explanationInput" name="explanation" class="form-control form-control-sm" type="text" placeholder="">
-                        </div>
-                      </div>
-                  </small>
-                </div>
-              </div>
-          </div>
-
-          <div class="p-1"></div>
-
-          <!-- <div id="question2" class="card bg-white borderrounded" hidden>
-              <div class="card-body mx-2">
-                <small>
-                  <div class="container">
-                      <div class="row justify-content-center">
-                        <div class="col-sm-4">
-                          <img src="http://{{ sever_name }}/static/imgs/circumplex-model.png" class="img-fluid" alt="circumplex model">
-                        </div>
-                        <div class="col-sm">
-
-                          </div>
-                      </div>
-                  </small>
-                </div>
-              </div>
-          </div>
-
-          <div class="p-1"></div> -->
-
-          <div id="question3" class="card bg-white borderrounded" hidden>
-              <div class="card-body mx-2">
-                <small>
-                  <label for="question3"><h6>3. Does this piece sound like a piece composed by a human?<sup class="required">*</sup></h6></label>
-
-                  <div class="container">
-                      <div class="row justify-content-center">
-                        <div id="question3-input" class="likert">
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question3" value="1" />
-                            <label class="form-check-label">Strongly Disagree</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question3" value="2" />
-                            <label class="form-check-label">Disagree</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question3" value="3" />
-                            <label class="form-check-label">Neutral</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question3" value="4" />
-                            <label class="form-check-label">Agree</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question3" value="5" />
-                            <label class="form-check-label">Strongly Agree</label>
-                          </div>
-
-                        </div>
-                      </div>
-                  </small>
-                </div>
-              </div>
-          </div>
-
-          <div class="p-1"></div>
-
-          <div id="question4" class="card bg-white borderrounded" hidden>
-              <div class="card-body mx-2">
-                <small>
-                  <label for="question4"><h6>4. Is the content of this piece interesting?<sup class="required">*</sup></h6></label>
-
-                  <div class="container">
-                      <div class="row justify-content-center">
-                        <div id="question4-input" class="likert">
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question4" value="1" />
-                            <label class="form-check-label">Strongly Disagree</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question4" value="2" />
-                            <label class="form-check-label">Disagree</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question4" value="3" />
-                            <label class="form-check-label">Neutral</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question4" value="4" />
-                            <label class="form-check-label">Agree</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question4" value="5" />
-                            <label class="form-check-label">Strongly Agree</label>
-                          </div>
-
-                        </div>
-                      </div>
-                  </small>
-                </div>
-              </div>
-          </div>
-
-          <div class="p-1"></div>
-
-          <div id="question5" class="card bg-white borderrounded" hidden>
-              <div class="card-body mx-2">
-                <small>
-                  <label for="question5"><h6>5. What is the overall musical quality of this piece?<sup class="required">*</sup></h6></label>
-
-                  <div class="container">
-                      <div class="row justify-content-center">
-                        <div id="question5-input" class="likert">
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question5" value="1" />
-                            <label class="form-check-label">Very Poor</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question5" value="2" />
-                            <label class="form-check-label">Poor</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question5" value="3" />
-                            <label class="form-check-label">Neutral</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question5" value="4" />
-                            <label class="form-check-label">Good</label>
-                          </div>
-
-                          <div class="likert-option form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="question5" value="5" />
-                            <label class="form-check-label">Very Good</label>
-                          </div>
-
-                        </div>
-                      </div>
-                  </small>
-                </div>
-              </div>
-          </div>
-
-          <div class="p-1"></div>
-
-          <div class="row align-items-center mt-2 mb-2">
+        <div class="row align-items-center mt-2 mb-2">
             <div class="col-4">
                 <button id="prevButton" type="button" class="btn-page btn border rounded bg-white" onclick="">Back</button>
                 <button id="nextButton" type="submit" class="btn-page btn border bg-white rounded">Next</button>
@@ -345,279 +146,197 @@
                     </div>
                 </div>
             </div>
-          </div>
-      </form>
+        </div>
+    </form>
 
-      <div class="p-4"></div>
-  </body>
+    <div class="p-4"></div>
+</body>
 
-  <!-- Load external libs -->
-  <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+<!-- Load external libs -->
+<script src="{{ url_for('static', filename='js/player.js') }}"></script>
 
-  <script>
-  function main() {
-      // Check if study has already been taken
-      let evaluationId = localStorage.getItem("evaluation_id");
-      console.log("evaluationId", evaluationId);
+<script>
+    function main() {
+        // Check if study has already been taken
+        const evaluationId = localStorage.getItem("evaluation_id");
+        console.log("evaluationId:", evaluationId);
 
-      if (evaluationId) {
-        window.location.href = "http://{{ sever_name }}/end";
-        return;
-      }
-
-      // Retrieve experiment data
-      let experiment = JSON.parse(localStorage.getItem("experiment"));
-      let order = localStorage.getItem("order").split(',');
-
-      // Retrieve current piece index
-      let pieceIndex = parseInt(localStorage.getItem("piece_index"));
-      console.log('pieceIndex ', pieceIndex, 'order.length ', order.length);
-
-      let question1Answer = localStorage.getItem(order[pieceIndex] + "_q1");
-      let question2Answer = localStorage.getItem(order[pieceIndex] + "_q2");
-      let question3Answer = localStorage.getItem(order[pieceIndex] + "_q3");
-      let question4Answer = localStorage.getItem(order[pieceIndex] + "_q4");
-      let question5Answer = localStorage.getItem(order[pieceIndex] + "_q5");
-      let explanationAnswer = localStorage.getItem(order[pieceIndex] + "_expl");
-
-      console.log(question1Answer, question2Answer, question3Answer, question4Answer, question5Answer, explanationAnswer);
-
-      if (question1Answer) {
-          document.getElementById("question1").hidden = false;
-          // document.getElementById("question2").hidden = false;
-          document.forms["evaluate-form"]["question1"].value = parseInt(question1Answer);
-          pieceEnded = true;
-      }
-
-      if (question2Answer) {
-          // document.getElementById("question2").hidden = false;
-          document.getElementById("question3").hidden = false;
-          document.forms["evaluate-form"]["question2"].value = parseInt(question2Answer);
-          pieceEnded = true;
-      }
-
-      if (question3Answer) {
-          document.getElementById("question3").hidden = false;
-          document.getElementById("question4").hidden = false;
-          document.forms["evaluate-form"]["question3"].value = parseInt(question3Answer);
-          pieceEnded = true;
-      }
-
-      if (explanationAnswer) {
-        document.forms["evaluate-form"]["explanation"].value = explanationAnswer;
-        pieceEnded = true;
-      }
-
-      if (question4Answer) {
-          document.getElementById("question4").hidden = false;
-          document.getElementById("question5").hidden = false;
-          document.forms["evaluate-form"]["question4"].value = parseInt(question4Answer);
-          pieceEnded = true;
-      }
-
-      if (question5Answer) {
-          document.getElementById("question5").hidden = false;
-          document.forms["evaluate-form"]["question5"].value = parseInt(question5Answer);
-          pieceEnded = true;
-      }
-
-
-      // Compute paging
-      let npage = document.getElementById("npage");
-      npage.innerHTML = npage.innerHTML.replace("I", pieceIndex + 4);
-      npage.innerHTML = npage.innerHTML.replace("N", order.length + 4);
-
-      let ppage = document.getElementById("ppage");
-      ppage.style.width = ((pieceIndex + 2)/(order.length + 2) * 100) + "%";
-
-      // Define piece name
-      let pieceName = document.getElementById("piece-name");
-      pieceName.innerHTML = pieceName.innerHTML.replace("_i_", pieceIndex + 1);
-
-      // Define button actions
-      let prevButton = document.getElementById('prevButton');
-
-      if (pieceIndex == 0) {
-        prevButton.onclick = function() {
-          saveForm();
-          localStorage.setItem("test_index", 2);
-          window.location.href = 'http://{{ sever_name }}/test/2'
+        if (evaluationId) {
+            window.location.href = "http://{{ sever_name }}/end";
+            return;
         }
-      }
-      else {
-        prevButton.onclick = function() {
-          saveForm();
-          localStorage.setItem("piece_index", pieceIndex - 1);
-          let order_experiment = experiment[order[pieceIndex - 1]]
-          let model_comb_key = order_experiment['model_comb_key'][0]
-          let model_comb_idx = order_experiment['model_comb_key'][1]
-          let pick_one_key = order_experiment['content_key'][0]
-          let content_idx = order_experiment['content_key'][1]
 
-          window.location.href = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
+        // Retrieve experiment data
+        const experiment = JSON.parse(localStorage.getItem("experiment"));
+        const order = localStorage.getItem("order").split(',');
+
+        const questions = JSON.parse('{{ questions | tojson }}');
+        console.log("Got the following questions from flask: \n" + questions);
+
+        let pieceIndex = parseInt(localStorage.getItem("piece_index"));
+        console.log('pieceIndex ', pieceIndex, 'order.length ', order.length);
+
+        // Set paging and define piece name
+        let npage = document.getElementById("npage");
+        npage.innerHTML = npage.innerHTML.replace("I", pieceIndex + 2);
+        npage.innerHTML = npage.innerHTML.replace("N", order.length + 2);
+
+        let ppage = document.getElementById("ppage");
+        ppage.style.width = ((pieceIndex + 2)/(order.length + 2) * 100) + "%";
+
+        let pieceName = document.getElementById("piece-name");
+        pieceName.innerHTML = pieceName.innerHTML.replace("_i_", pieceIndex + 1);
+
+        // Set answers if user has used the prevButton
+        questions.forEach(question => {
+            const question_id = question._id
+            const questionAnswer = localStorage.getItem(order[pieceIndex] + "_q" + question_id);
+
+            if (questionAnswer) {
+                console.log(`Prev Button was used: Question ${question_id} had answer ${questionAnswer}`)
+                document.getElementById("question"+question_id).hidden = false;
+                document.forms["evaluate-form"]["question"+question_id].value = parseInt(questionAnswer);
+                pieceEnded = true;
+            }
+        });
+
+        // Define Back button action
+        let prevButton = document.getElementById('prevButton');
+
+        if (pieceIndex == 0) {
+            prevButton.onclick = function() {
+                saveForm();
+                window.location.href = 'http://{{ sever_name }}'
+            }
         }
-      }
+        else {
+            prevButton.onclick = function() {
+                saveForm();
+                localStorage.setItem("piece_index", pieceIndex - 1);
+                const order_experiment = experiment[order[pieceIndex - 1]]
+                const model_comb_key = order_experiment['model_comb_key'][0]
+                const model_comb_idx = order_experiment['model_comb_key'][1]
+                const pick_one_key = order_experiment['content_key'][0]
+                const content_idx = order_experiment['content_key'][1]
 
-      // Define form actions
-      let evaluateForm = document.getElementById('evaluate-form');
-
-      if (pieceIndex < order.length - 1) {
-        let order_experiment = experiment[order[pieceIndex + 1]]
-        let model_comb_key = order_experiment['model_comb_key'][0]
-        let model_comb_idx = order_experiment['model_comb_key'][1]
-        let pick_one_key = order_experiment['content_key'][0]
-        let content_idx = order_experiment['content_key'][1]
-
-        evaluateForm.action = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
-      }
-      else {
-        evaluateForm.action = 'http://{{ sever_name }}/profile'
-      }
-
-      // Video Player
-      let pieceVideo = document.getElementById("pieceVideo");
-
-      pieceVideo.onended = function() {
-        pieceEnded = true;
-        document.getElementById("question1").hidden = false;
-
-        pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png";
-        playhead.style.backgroundColor = "black";
-      };
-      
-      // // Audio Player
-      // let pieceAudio = document.getElementById("pieceAudio");
-      
-      // pieceAudio.onended = function() {
-      //   pieceEnded = true;
-      //   document.getElementById("question1").hidden = false;
-
-      //   pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png";
-      //   playhead.style.backgroundColor = "black";
-      // };
-
-      let question1Input = document.getElementById("question1-input");
-      let question2Input = document.getElementById("question2-input");
-      let question3Input = document.getElementById("question3-input");
-      let question4Input = document.getElementById("question4-input");
-      let question5Input = document.getElementById("question5-input");
-      let explanationInput = document.getElementById("explanationInput");
-
-      question1Input.onclick = function() {
-        if (document.forms["evaluate-form"]["question1"].value &&
-            document.forms["evaluate-form"]["question2"].value &&
-            document.forms["evaluate-form"]["explanation"].value) {
-            document.getElementById("question3").hidden = false;
+                window.location.href = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
+            }
         }
-      }
 
-      question2Input.onclick = function() {
-        if (document.forms["evaluate-form"]["question1"].value &&
-            document.forms["evaluate-form"]["question2"].value &&
-            document.forms["evaluate-form"]["explanation"].value) {
-            document.getElementById("question3").hidden = false;
+        // Define Next button action
+        let evaluateForm = document.getElementById('evaluate-form');
+
+        if (pieceIndex < order.length - 1) {
+            const order_experiment = experiment[order[pieceIndex + 1]]
+            const model_comb_key = order_experiment['model_comb_key'][0]
+            const model_comb_idx = order_experiment['model_comb_key'][1]
+            const pick_one_key = order_experiment['content_key'][0]
+            const content_idx = order_experiment['content_key'][1]
+
+            evaluateForm.action = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
         }
-      }
-
-      explanationInput.addEventListener('input', function() {
-        if (document.forms["evaluate-form"]["question1"].value &&
-            document.forms["evaluate-form"]["question2"].value &&
-            document.forms["evaluate-form"]["explanation"].value) {
-            document.getElementById("question3").hidden = false;
+        else {
+            evaluateForm.action = 'http://{{ sever_name }}/profile'
         }
-      });
 
-      question3Input.onclick = function() {
-        if (document.forms["evaluate-form"]["question3"].value) {
-            document.getElementById("question4").hidden = false;
-        }
-      }
+        // Video Player
+        let pieceVideo = document.getElementById("pieceVideo");
 
-      question4Input.onclick = function() {
-        if (document.forms["evaluate-form"]["question4"].value) {
-            document.getElementById("question5").hidden = false;
-        }
-      }
-  }
+        pieceVideo.onended = function() {
+            pieceEnded = true;
+            document.getElementById("question0").hidden = false;
 
-  function saveForm() {
-    let order = localStorage.getItem("order").split(',');
-    let pieceIndex = parseInt(localStorage.getItem("piece_index"));
+            pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png";
+            playhead.style.backgroundColor = "black";
+        };
 
-    let question1Answer = document.forms["evaluate-form"]["question1"].value;
-    let question2Answer = document.forms["evaluate-form"]["question2"].value;
-    let question3Answer = document.forms["evaluate-form"]["question3"].value;
-    let question4Answer = document.forms["evaluate-form"]["question4"].value;
-    let question5Answer = document.forms["evaluate-form"]["question5"].value;
-    let explanationAnswer = document.forms["evaluate-form"]["explanation"].value;
+        // // Audio Player
+        // let pieceAudio = document.getElementById("pieceAudio");
 
-    if (question1Answer) {
-        localStorage.setItem(order[pieceIndex] + "_q1", question1Answer);
+        // pieceAudio.onended = function() {
+        //   pieceEnded = true;
+        //   document.getElementById("question0").hidden = false;
+
+        //   pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png";
+        //   playhead.style.backgroundColor = "black";
+        // };
     }
 
-    if (question2Answer) {
-        localStorage.setItem(order[pieceIndex] + "_q2", question2Answer);
+    function question_onclick(question_id) {
+        const current_question = "question"+question_id
+        const next_question_id_int = parseInt(question_id)+1
+        const next_question_id = "question" + next_question_id_int
+
+        console.log('current_question: ', current_question, "next_question id: " + next_question_id)
+
+        // If there is a next question 
+        const next_question_elem = document.getElementById(next_question_id)
+        if (next_question_elem){
+            console.log('next_question exists and has value:\n', next_question_elem)
+
+            // If current question received a value, show the next one
+            if (document.forms["evaluate-form"][current_question].value) {
+                document.getElementById(next_question_id).hidden = false;
+            }
+        }
     }
 
-    if (question3Answer) {
-        localStorage.setItem(order[pieceIndex] + "_q3", question3Answer);
+    function saveForm() {
+        const order = localStorage.getItem("order").split(',');
+        const pieceIndex = parseInt(localStorage.getItem("piece_index"));
+        const questions = JSON.parse('{{ questions | tojson }}');
+
+        questions.forEach(question => {
+            const question_id = question._id
+            const questionAnswer = document.forms["evaluate-form"]["question"+question_id].value;
+            localStorage.setItem(order[pieceIndex] + "_q" + question_id, questionAnswer);
+
+            console.log(`For pice ${order[pieceIndex]} saved question ${question_id} with value ${questionAnswer}`)
+        });
     }
 
-    if (question4Answer) {
-        localStorage.setItem(order[pieceIndex] + "_q4", question4Answer);
+    function validateForm() {
+        if (!pieceEnded) {
+            alert("Please listen to the piece until the end.");
+            return false;
+        }
+
+        let pieceIndex = parseInt(localStorage.getItem("piece_index"));
+        const questions = JSON.parse('{{ questions | tojson }}');
+
+        questions.forEach(question => {
+            const question_id = question._id
+            const questionAnswer = document.forms["evaluate-form"]["question"+question_id].value;
+
+            if(!questionAnswer){
+                alert("Please answer all the questions.");
+                return false;
+            }
+        });
+
+        saveForm();
+
+        localStorage.setItem("piece_index", pieceIndex + 1);
+        return true;
     }
 
-    if (question5Answer) {
-        localStorage.setItem(order[pieceIndex] + "_q5", question5Answer);
+    //Play and Pause
+    function play() {
+        // start music
+        if (music.paused) {
+            music.play();
+            // remove play, add pause
+            pButtonImg.src = "http://{{ sever_name }}/static/imgs/pause-64x64.png";
+        } else { 
+            // pause music
+            music.pause();
+            // remove pause, add play
+            pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png"
+        }
     }
 
-    if (explanationAnswer) {
-      localStorage.setItem(order[pieceIndex] + "_expl", explanationAnswer);
-    }
-  }
-
-  function validateForm() {
-      let pieceIndex = parseInt(localStorage.getItem("piece_index"));
-
-      if (!pieceEnded) {
-          alert("Please listen to the piece until the end.");
-          return false;
-      }
-
-      let question1Answer = document.forms["evaluate-form"]["question1"].value;
-      let question2Answer = document.forms["evaluate-form"]["question2"].value;
-      let question3Answer = document.forms["evaluate-form"]["question3"].value;
-      let question4Answer = document.forms["evaluate-form"]["question4"].value;
-      let question5Answer = document.forms["evaluate-form"]["question5"].value;
-      let explanationAnswer = document.forms["evaluate-form"]["explanation"].value;
-
-      if (!question1Answer || !question2Answer || !question3Answer || !question4Answer || !question5Answer || !explanationAnswer) {
-        alert("Please answer all the questions.");
-        return false;
-      }
-
-      saveForm();
-
-      localStorage.setItem("piece_index", pieceIndex + 1);
-      return true;
-  }
-
-  //Play and Pause
-  function play() {
-      // start music
-      if (music.paused) {
-          music.play();
-          // remove play, add pause
-          pButtonImg.src = "http://{{ sever_name }}/static/imgs/pause-64x64.png";
-      } else { // pause music
-          music.pause();
-          // remove pause, add play
-          pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png"
-      }
-  }
-
-  // play button event listenter
-  pButton.addEventListener("click", play);
-  </script>
+    // play button event listenter
+    pButton.addEventListener("click", play);
+</script>
 
 </html>

@@ -2,7 +2,7 @@ from itertools import combinations
 
 from pymongo import MongoClient
 
-from study_template import StudyTemplate, LevelType, Level
+from study_template import StudyTemplate, LevelType, Level, LikertQuestion
 
 # Connect with database
 database_url = "localhost:27017"
@@ -11,6 +11,7 @@ database = MongoClient(database_url)
 # Create database
 pick_one_col = database["user_study_test"]["control_pick_one"]
 models_comb_col = database["user_study_test"]["control_models_combinations"]
+questions_col = database["user_study_test"]["questions"]
 
 def register_study(t:StudyTemplate):
     # Register the pick_one_dict with the pick_one_keys, the list of contents inside each key
@@ -44,15 +45,53 @@ def register_study(t:StudyTemplate):
 
     print(f"Registered {idx+1} model combinations.\n\tThe last one is {models_comb_dict}\n")
 
+    # Register questions
+    for idx, question in enumerate(t.questions):
+        quesntion_dict = {
+            '_id': idx,
+            'header': question.header,
+            'options': question.options
+        }
+
+        questions_col.insert_one(quesntion_dict)
+
+    print(f"Registered {idx+1} questions.\n\tThe last one is {quesntion_dict}\n")
+
 def main():
+    questions_headers = [
+        # TODO This music sounds as a retro videogame piece - e.g., SNES
+        # TODO How much this piece sounds as a retro videogame music - e.g., SNES
+        # Strongly Disagree ---- Strongly Agree
+
+        # Got from GVMGen -> Equivalent to ImageBind
+        "What is the overall (semantic, emotional and rhythmic) correspondence between this soundtrack and the video?",
+        # Inspired by OSSL -> Equivalent to Genre Classifier
+        "What is the overall correspondence between this soundtrack and the genre of the game in the video?",
+        # Got from GVMGen -> Equivalent to FAD
+        "What is the overall audio quality of this piece?",
+        # Got from GVMGen -> Equivalent to KLD
+        "What is the overall musical quality (rhythm, harmony, melody, form, etc) of this piece?"
+    ]
+
     koji_gen = StudyTemplate(
-        name="KojiGen",
-        models_comb=3,
+        name="Evaluating Generative Music for Videogames",
+        models_comb=3, # Fazer cada modelo separado. Permutar modelos. Pegar uma música aleatória pra cada modelo. Precisa que cada modelo tenha X avaliações e não cada música. Atribuir músicas diferentes é mais pra eliminar o viés da música
+                       # Fazer original, shufle no modelo -> original, shufle no modelo
+                       # Fixar 2 | 1 original + 3 modelos | original 2 + 3 modelos | demográfico
+                       # 
+                       # Title: Evaluating generative music for videogames
         ends_with="_gen.mp4",
         levels = [
             Level("Model", LevelType.MODEL),
             Level("Inference", LevelType.FOLDER, force_folder="inference"),
             Level("Game Genre", LevelType.PICK_ONE)
+        ],
+        questions = [
+            LikertQuestion(
+                header=question_header,
+                options=["Very Poor", "Poor", "Neutral", "Good", "Very Good"]
+            )
+            for question_header in questions_headers
         ]
     )
 

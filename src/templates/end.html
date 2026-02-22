@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,33 +17,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <title>KojiGen</title>
-  </head>
+</head>
 
-  <body onload="main()">
+<body onload="main()">
+	<div class="p-1"></div>
 
-  <div class="p-1"></div>
+	<div class="card bg-white text-dark border rounded">
+		<div class="card-header border-0 bg-primary"></div>
 
-  <div class="card bg-white text-dark border rounded">
-      <div class="card-header border-0 bg-primary"></div>
+		<div class="card-body mx-2">
+		<div id="header">
+			<img src="http://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" alt="Responsive image" width="30%">
+			<h2 class="font-weight-normal">KojiGen: Video Encoding Methods for the Video-to-Music Task in a Gameplay Dataset</h2>
+		</div>
 
-      <div class="card-body mx-2">
-        <div id="header">
-          <img src="http://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" alt="Responsive image" width="30%">
-          <h2 class="font-weight-normal">KojiGen: Video Encoding Methods for the Video-to-Music Task in a Gameplay Dataset</h2>
-        </div>
-
-          <small>
-          <p>Thank you for taking part in our experiment! Your response has been recorded. Your completion code <mark id="evaluation_id"></mark><br><br>
-            Version Date: 20 Feb 2026
-          </p>
-          </small>
-      </div>
-    </div>
+			<small>
+			<p>Thank you for taking part in our experiment! Your response has been recorded. Your completion code <mark id="evaluation_id"></mark><br><br>
+			Version Date: 20 Feb 2026
+			</p>
+			</small>
+		</div>
+	</div>
 
     <div class="p-4"></div>
-  </body>
+</body>
 
-  <script>
+<script>
     function main() {
         // Check if study has already been taken
         let evaluationId = localStorage.getItem("evaluation_id");
@@ -66,5 +65,5 @@
 			localStorage.setItem("evaluation_id", evaluationId);
         }
     }
-  </script>
+</script>
 </html>
