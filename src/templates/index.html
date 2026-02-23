@@ -130,42 +130,37 @@
 
 <script>
 	function main() {
-        // Compute paging
-        let order = JSON.parse('{{order | tojson}}');
+		// Get random sequence of pieces
+		const experiments_dict = JSON.parse('{{experiments_dict | tojson}}');
+		const experiments_len = Object.keys(experiments_dict).length 
 
-        document.getElementById("n_pieces").innerHTML = order.length;
-        document.getElementById("xp_duration").innerHTML = Math.round((order.length * 45)/60);
+        document.getElementById("n_pieces").innerHTML = experiments_len;
+        document.getElementById("xp_duration").innerHTML = Math.round((experiments_len * 45)/60);
 
         let npage = document.getElementById("npage");
-        npage.innerHTML = npage.innerHTML.replace("N", order.length + 2);
+        npage.innerHTML = npage.innerHTML.replace("N", experiments_len + 2);
 
         let ppage = document.getElementById("ppage");
-        ppage.style.width = (1/(order.length + 2) * 100) + "%";
+        ppage.style.width = (1/(experiments_len + 2) * 100) + "%";
 
-        // Make sure localStorage is clear when the experiment starts
+        // Make sure localStorage is clear when the experiments start
         localStorage.clear();
-
-        // Get random sequence of pieces
-        let experiment = JSON.parse('{{experiment | tojson}}');
 
         // Set Next button action
         let submitForm = document.getElementById("submitForm");
 
 		localStorage.setItem("piece_index", 0);
 
-		let order_experiment = experiment[order[0]]
-		let model_comb_key = order_experiment['model_comb_key'][0]
-		let model_comb_idx = order_experiment['model_comb_key'][1]
-		let pick_one_key = order_experiment['content_key'][0]
-		let content_idx = order_experiment['content_key'][1]
+		const first_experiment = experiments_dict[0]
+		const model_key = first_experiment['model_key']
+		const pick_one_key = first_experiment['pick_one_key']
+		const content_key = first_experiment['content_key']
 
-		submitForm.action = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
+		submitForm.action = 'http://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
 
-        // Save experiment and order of pieces
-        console.log("SAVING XP", experiment) //#TODO: Remove
-        console.log("SAVING ORDER", order) //#TODO: Remove
-        localStorage.setItem("experiment", JSON.stringify(experiment));
-        localStorage.setItem("order", order);
+        // Save experiments_dict
+        console.log("SAVING XP", experiments_dict) //#TODO: Remove
+        localStorage.setItem("experiments_dict", JSON.stringify(experiments_dict));
 	}
 </script>
 </html>

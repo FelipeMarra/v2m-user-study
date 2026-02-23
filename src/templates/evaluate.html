@@ -166,23 +166,23 @@
             return;
         }
 
-        // Retrieve experiment data
-        const experiment = JSON.parse(localStorage.getItem("experiment"));
-        const order = localStorage.getItem("order").split(',');
+        // Retrieve experiments_dict data
+        const experiments_dict = JSON.parse(localStorage.getItem("experiments_dict"));
+        const experiments_len = Object.keys(experiments_dict).length 
 
         const questions = JSON.parse('{{ questions | tojson }}');
         console.log("Got the following questions from flask: \n" + questions);
 
         let pieceIndex = parseInt(localStorage.getItem("piece_index"));
-        console.log('pieceIndex ', pieceIndex, 'order.length ', order.length);
+        console.log('pieceIndex ', pieceIndex);
 
         // Set paging and define piece name
         let npage = document.getElementById("npage");
         npage.innerHTML = npage.innerHTML.replace("I", pieceIndex + 2);
-        npage.innerHTML = npage.innerHTML.replace("N", order.length + 2);
+        npage.innerHTML = npage.innerHTML.replace("N", experiments_len + 2);
 
         let ppage = document.getElementById("ppage");
-        ppage.style.width = ((pieceIndex + 2)/(order.length + 2) * 100) + "%";
+        ppage.style.width = ((pieceIndex + 2)/(experiments_len + 2) * 100) + "%";
 
         let pieceName = document.getElementById("piece-name");
         pieceName.innerHTML = pieceName.innerHTML.replace("_i_", pieceIndex + 1);
@@ -190,7 +190,7 @@
         // Set answers if user has used the prevButton
         questions.forEach(question => {
             const question_id = question._id
-            const questionAnswer = localStorage.getItem(order[pieceIndex] + "_q" + question_id);
+            const questionAnswer = localStorage.getItem(pieceIndex + "_q" + question_id);
 
             if (questionAnswer) {
                 console.log(`Prev Button was used: Question ${question_id} had answer ${questionAnswer}`)
@@ -213,27 +213,25 @@
             prevButton.onclick = function() {
                 saveForm();
                 localStorage.setItem("piece_index", pieceIndex - 1);
-                const order_experiment = experiment[order[pieceIndex - 1]]
-                const model_comb_key = order_experiment['model_comb_key'][0]
-                const model_comb_idx = order_experiment['model_comb_key'][1]
-                const pick_one_key = order_experiment['content_key'][0]
-                const content_idx = order_experiment['content_key'][1]
+                const current_experiment = experiments_dict[pieceIndex - 1]
+                const model_key = current_experiment['model_key']
+                const pick_one_key = current_experiment['pick_one_key']
+                const content_key = current_experiment['content_key']
 
-                window.location.href = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
+                window.location.href = 'http://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
             }
         }
 
         // Define Next button action
         let evaluateForm = document.getElementById('evaluate-form');
 
-        if (pieceIndex < order.length - 1) {
-            const order_experiment = experiment[order[pieceIndex + 1]]
-            const model_comb_key = order_experiment['model_comb_key'][0]
-            const model_comb_idx = order_experiment['model_comb_key'][1]
-            const pick_one_key = order_experiment['content_key'][0]
-            const content_idx = order_experiment['content_key'][1]
+        if (pieceIndex < experiments_len - 1) {
+            const current_experiment = experiments_dict[pieceIndex + 1]
+            const model_key = current_experiment['model_key']
+            const pick_one_key = current_experiment['pick_one_key']
+            const content_key = current_experiment['content_key']
 
-            evaluateForm.action = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
+            evaluateForm.action = 'http://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
         }
         else {
             evaluateForm.action = 'http://{{ sever_name }}/profile'
@@ -282,16 +280,15 @@
     }
 
     function saveForm() {
-        const order = localStorage.getItem("order").split(',');
         const pieceIndex = parseInt(localStorage.getItem("piece_index"));
         const questions = JSON.parse('{{ questions | tojson }}');
 
         questions.forEach(question => {
             const question_id = question._id
             const questionAnswer = document.forms["evaluate-form"]["question"+question_id].value;
-            localStorage.setItem(order[pieceIndex] + "_q" + question_id, questionAnswer);
+            localStorage.setItem(pieceIndex + "_q" + question_id, questionAnswer);
 
-            console.log(`For pice ${order[pieceIndex]} saved question ${question_id} with value ${questionAnswer}`)
+            console.log(`For pice ${pieceIndex} saved question ${question_id} with value ${questionAnswer}`)
         });
     }
 

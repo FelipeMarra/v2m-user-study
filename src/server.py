@@ -2,6 +2,7 @@ import os
 import random
 import typing as tp
 import json
+from copy import deepcopy
 
 from flask import Flask
 from flask import request
@@ -19,145 +20,163 @@ database_url = "localhost:27017"
 client = MongoClient(database_url)
 db = client["user_study_test"]
 
-pick_one_col = db["control_pick_one"]
-models_comb_col = db["control_models_combinations"]
+# Create database
+pick_one_col = db["pick_one"]
+models_col = db["models"]
 questions_col = db["questions"]
+xp_meta_col = db["xp_meta"] # metadata like template's n_models and n_experiments
 results_col = db["results"]
 
 app = Flask(__name__)
 
-XP_MODEL_COMB_KEY = -1
-XP_CONTENTS_KEYS = -2
 VERBOSE = True
+GT_KEY = -1
+GT_ENDS_WITH = ''
 
-def get_models_combination() -> tp.List[tp.Tuple[int, int]]:
-    combination_visits = {}
-    models_combinations = models_comb_col.find({})
+def get_models() -> tp.Tuple[tp.List[int], int]:
+    global GT_KEY, GT_ENDS_WITH
 
-    for m in models_combinations:
-        combination_visits[m['_id']] = m['visits']
+    models_visits = {}
+    models = models_col.find({})
+    n_models:int = xp_meta_col.find_one({'_id': 0})['n_models'] # type: ignore
+    gt:str = xp_meta_col.find_one({'_id': 0})['gt'] # type: ignore
 
-    num_models = len(m['paths'])
-    min_key = min(combination_visits, key=combination_visits.get) # type: ignore
-    min_visists = combination_visits[min_key]
+    if VERBOSE: print(f"get_models n_models_to_choose {n_models}")
 
-    min_combinations_ids = [combination_id for combination_id, visits in combination_visits.items() if min_visists == visits]
-    chosen_combination = random.choice(min_combinations_ids)
+    gt_key = -1
+    for m in models:
+        if m['name'] != gt:
+            models_visits[m['_id']] = m['visits']
+        else:
+            gt_key = m['_id']
+            GT_KEY = gt_key
+            GT_ENDS_WITH = m['ends_with']
 
-    models = []
-    for i in range(num_models):
-        models.append((chosen_combination, i))
+    if VERBOSE: print(f"get_models gt_key {gt_key} \nmodels_visits: {models_visits}")
 
-    log_choosen = models_comb_col.find_one({'_id':chosen_combination})
+    # Choosing from the min visits can't guarantee that we'll choose the amount of models we need, therefore the while loop
+    chosen_models_keys = []
+    while len(chosen_models_keys) < n_models:
+        min_key:tp.List[int] = min(models_visits, key=models_visits.get) # type: ignore
+        min_visists = models_visits[min_key]
+        if VERBOSE: print(f"get_models min_keys visits {min_key} | min_visists: {min_visists}")
 
-    if VERBOSE: print(f"Chosen Models:\n\t--> Comb Key: {chosen_combination}\n\t--> Paths: {log_choosen['paths']}") # type: ignore
+        min_ids = [model_id for model_id, visits in models_visits.items() if min_visists == visits]
 
-    return models
+        k = n_models-len(chosen_models_keys)
+        k = k if len(min_ids) >= k else len(min_ids) # min_ids might have less than k values
 
-def get_pick_one_contents() -> tp.List[tp.Tuple[int, int]]:
-    pick_one_contents:tp.List[tp.Tuple[int, int]] = []
+        chosen_models_keys += random.sample(min_ids, k=k)
+        if VERBOSE: print(f"get_models chosen_models_keys: {chosen_models_keys}")
+
+        # Can't choose the same keys again
+        for key in chosen_models_keys:
+            if isinstance(models_visits.get(key), int):
+                models_visits.pop(key)
+                if VERBOSE:
+                    choosen_path:str = models_col.find_one({'_id':key})['path'] # type: ignore
+                    print(f"chosen model: {key} | models_visits: {models_visits} | path: {choosen_path}\n")
+
+    if VERBOSE: print(f"------------> FINAL chosen_models_keys: {chosen_models_keys}\n")
+
+    return chosen_models_keys, gt_key
+
+def get_contents() -> tp.Tuple[tp.List[tp.Tuple[int, int]], int]:
     pick_one_dict = pick_one_col.find({})
+    n_experiments:int = xp_meta_col.find_one({'_id': 0})['n_experiments'] # type: ignore
 
-    if VERBOSE: print(f"Chosen Contents:")
+    p_visits = {}
     for p in pick_one_dict:
-        p_visits:tp.List[int] = p['visits']
-        min_visits:int = min(p_visits)
+        p_visits[p['_id']] = p['visits']
 
-        min_contents = []
-        for idx, visits in enumerate(p_visits):
-            if min_visits == visits:
-                min_contents.append(idx)
+    choosen_pick_one = []
+    while len(choosen_pick_one) < n_experiments:
+        min_keys:int = min(p_visits, key=p_visits.get) # type: ignore
+        min_visits = p_visits[min_keys]
 
-        choosen_content = random.choice(min_contents)
+        if VERBOSE: print(f"get_contents pick_one min_keys {min_keys} | min_visists: {min_visits}")
 
-        pick_one_contents.append((p['_id'], choosen_content))
+        min_ids = [pick_one_id for pick_one_id, visits in p_visits.items() if min_visits == visits]
+
+        k = n_experiments-len(choosen_pick_one)
+        k = k if len(min_ids) >= k else len(min_ids) # min_ids might have less than k values
+
+        choosen_pick_one += random.sample(min_ids, k=k)
+
+        if VERBOSE: print(f"get_contents choosen_pick_one: {choosen_pick_one}")
+
+        # Can't choose the same keys again
+        for key in choosen_pick_one:
+            if p_visits.get(key):
+                if VERBOSE: print(f"get_contents del: {key} | p_visits: {p_visits}")
+                p_visits.pop(key)
+
+    # Choose the contents from the chosen pick_one
+    chosen_contents:tp.List[tp.Tuple[int, int]] = []
+
+    for key in choosen_pick_one:
+        pick_one = pick_one_col.find_one({'_id': key})
+        contents_visits:tp.List[int] = pick_one['contents_visits'] # type: ignore
+
+        # Find the index of the first occurrence of the minimum value
+        min_visits = min(contents_visits)
+        min_indexes = [idx for idx, visits in enumerate(contents_visits) if min_visits == visits]
+        min_index = random.choice(min_indexes)
+
+        chosen_contents.append((key, min_index))
 
         if VERBOSE: 
-            print(f"\t--> Pick One Key: {p['_id']} | Name: {p['name']} | Path: {p['contents'][choosen_content]}")
+            print(f"\t--> Pick One Key: {key} | Name: {pick_one['name']} | Path: {pick_one['contents'][min_index]}") # type: ignore
 
-    return pick_one_contents
+    return chosen_contents, n_experiments
 
-def get_final_experiment(model_comb_key:tp.List[tp.Tuple[int, int]], contets_keys:tp.List[tp.Tuple[int, int]]):
-    experiment = {}
-    order = []
+def get_experiment(models_keys:tp.List[int], gt_key:int, contets_keys:tp.List[tp.Tuple[int, int]], n_experiments:int):
+    experiments_dict = {}
     counter = 0
 
-    for model_key in model_comb_key:
-        for content_key in contets_keys:
-            experiment[counter] = {
-                'model_comb_key': model_key,
+    for idx in range(n_experiments):
+        # shuffle models for each experiment
+        shuffled_model_keys = deepcopy(models_keys)
+        if VERBOSE: print(f"BEFORE SHUFFLE get_experiment {idx} | shuffled_model_keys: {shuffled_model_keys}")
+        random.shuffle(shuffled_model_keys)
+
+        # insert ground truth at the begining of every experiment
+        shuffled_model_keys.insert(0, gt_key)
+
+        if VERBOSE: print(f"AFTER SHUFFLE get_experiment {idx} | shuffled_model_keys: {shuffled_model_keys}")
+
+        for model_key in shuffled_model_keys:
+            pick_one_key, content_key = contets_keys[idx]
+            experiments_dict[counter] = {
+                'xp_idx': idx,
+                'model_key': model_key,
+                'pick_one_key': pick_one_key,
                 'content_key': content_key
             }
-            order.append(counter)
-            counter += 1
-    
-    return experiment, order
 
-def get_final_experiment_test(model_comb_key:tp.List[tp.Tuple[int, int]], contets_keys:tp.List[tp.Tuple[int, int]]):
-    experiment = {}
-    order = []
-    counter = 0
+            if VERBOSE: print(f"get_experiment experiments_dict {counter}: {experiments_dict[counter]}\n")
 
-    for model_key in model_comb_key[:2]:
-        for content_key in contets_keys[:2]:
-            experiment[counter] = {
-                'model_comb_key': model_key,
-                'content_key': content_key
-            }
-            order.append(counter)
             counter += 1
-    
-    return experiment, order
+
+    return experiments_dict
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
-@app.route('/index_test')
-def index_test():
-    global VERBOSE
-    VERBOSE = True
-    # Get least visited models combination id
-    model_comb_key:tp.List[tp.Tuple[int, int]] = get_models_combination()
-
-    # Get least visited pick_one contents
-    contets_keys:tp.List[tp.Tuple[int, int]] = get_pick_one_contents()
-
-    experiment, order = get_final_experiment_test(model_comb_key, contets_keys)
-
-    experiment[XP_MODEL_COMB_KEY] = model_comb_key[0][0]
-    experiment[XP_CONTENTS_KEYS] = contets_keys
-
-    # Randomize pieces order
-    random.shuffle(order)
-
-    return render_template(
-        'index.html', 
-        experiment=experiment,
-        order=order,
-        sever_name=sever_name
-    )
-
 @app.route('/')
 def index():
     # Get least visited models combination id
-    model_comb_key:tp.List[tp.Tuple[int, int]] = get_models_combination()
+    models_keys, gt_key = get_models()
 
     # Get least visited pick_one contents
-    contets_keys:tp.List[tp.Tuple[int, int]] = get_pick_one_contents()
+    contets_keys, n_experiments = get_contents()
 
-    experiment, order = get_final_experiment(model_comb_key, contets_keys)
-
-    experiment[XP_MODEL_COMB_KEY] = model_comb_key[0][0]
-    experiment[XP_CONTENTS_KEYS] = contets_keys
-
-    # Randomize pieces order
-    random.shuffle(order)
+    experiments_dict = get_experiment(models_keys, gt_key, contets_keys, n_experiments)
 
     return render_template(
         'index.html', 
-        experiment=experiment,
-        order=order,
+        experiments_dict=experiments_dict,
         sever_name=sever_name
     )
 
@@ -174,17 +193,24 @@ def get_questions():
 
     return questions
 
-@app.route('/evaluate/<model_comb_key>/<model_comb_idx>/<pick_one_key>/<content_idx>')
-def evaluate(model_comb_key:str, model_comb_idx:str, pick_one_key:str, content_idx:str):
-    model_path = models_comb_col.find_one({"_id": int(model_comb_key)})['paths'][int(model_comb_idx)] # type: ignore
-    content_path = pick_one_col.find_one({"_id": int(pick_one_key)})['contents'][int(content_idx)] # type: ignore
+# #TODO: Maybe change to only receive the experiment dict key
+@app.route('/evaluate/<model_key>/<pick_one_key>/<content_key>')
+def evaluate(model_key:str, pick_one_key:str, content_key:str):
+    model:tp.Dict[str, tp.Any] = models_col.find_one({"_id": int(model_key)}) # type: ignore
+    content_path:str = pick_one_col.find_one({"_id": int(pick_one_key)})['contents'][int(content_key)] # type: ignore
+    gen_ends_with:str = xp_meta_col.find_one({'_id': 0})['gen_ends_with'] # type: ignore
 
-    piece = os.path.join(model_path, content_path)
+    if VERBOSE: print(f"\n EVAL ROUT: \n\tmodel_key: {model_key}\n\tGT_KEY: {GT_KEY}\n\tgen_ends_with {gen_ends_with}\n\tGT_ENDS_WITH: {GT_ENDS_WITH}")
+
+    if model_key == str(GT_KEY):
+        content_path = content_path.replace(gen_ends_with, GT_ENDS_WITH)
+
+    piece = os.path.join(model['path'], content_path)
 
     # Get questions
     questions = get_questions()
 
-    print(f"\nEVAL QUESNTIONS: {questions}\n")
+    if VERBOSE: print(f"EVAL ROUT QUESNTIONS: {questions}\n")
 
     return render_template(
         'evaluate.html', 
@@ -205,53 +231,76 @@ def profile():
     )
 
 # End rout
-def increment_visits(model_comb_key:int, contets_keys:tp.List[tp.Tuple[int, int]]):
-    # Increment model_comb_key visists
-    model_comb_filter = {'_id': model_comb_key}
-    model_comb_op = {
-        '$inc': { 'visists': 1 }
-    }
+def increment_visits(models_keys:tp.List[int], contets_keys:tp.List[tp.Tuple[int, int]]):
+    for model_key in models_keys:
+        # Increment model_comb_key visists
+        model_filter = {'_id': model_key}
+        model_op = {
+            '$inc': { 'visists': 1 }
+        }
 
-    result = models_comb_col.update_one(model_comb_filter, model_comb_op)
-
-    if VERBOSE: print(f"Model Comb Key {model_comb_key} Visits Updated to {result}")
+        result = models_col.update_one(model_filter, model_op)
+        if VERBOSE: print(f"Model Comb Key {model_key} Visits Updated to {result}")
 
     # Increment contents visists
     for pick_one_key, content_key in contets_keys:
-        pick_one_key = { '_id': pick_one_key }
+        # Increment pick_one visists
+        pick_one_key = {'_id': pick_one_key}
+        pick_one_op = {
+            '$inc': { 'visists': 1 }
+        }
 
+        result = pick_one_col.update_one(pick_one_key, pick_one_op)
+        if VERBOSE: print(f"Pick One Key {pick_one_key} visits updated to {result.modified_count}")
+
+        # Increment contents visists
         content_op = {
-            '$inc': {f'visits.{content_key}': 1 }
+            '$inc': {f'contents_visits.{content_key}': 1 }
         }
 
         result = pick_one_col.update_one(pick_one_key, content_op)
-
         if VERBOSE: print(f"Pick One Key {pick_one_key} at Content {content_key} Visits Updated to {result.modified_count}")
 
 @app.route('/end', methods = ['GET', 'POST']) # type: ignore
 def end():
     if request.method == 'POST':
         result = {}
-        if request.form.get('experiment'):
-            experiments:str = request.form.get('experiment') # type: ignore
-            experiment:dict = json.loads(experiments)
+        experiments_dict:str = request.form.get('experiments_dict') # type: ignore
+        print(f"END ROUT POST experiments_dict as str:\n{experiments_dict}\n")
+        if experiments_dict:
+            experiments_dict:dict = json.loads(experiments_dict) # type: ignore
 
-            # Add 1 in used model comb and contents
-            model_comb_key = experiment[str(XP_MODEL_COMB_KEY)]
-            contets_keys = experiment[str(XP_CONTENTS_KEYS)]
-
-            increment_visits(model_comb_key, contets_keys)
-
+            models_keys = []
+            contets_keys = []
             questions = get_questions()
 
-            for key in experiment:
-                if key not in ['_id', str(XP_MODEL_COMB_KEY), str(XP_CONTENTS_KEYS)]:
+            for key, value in experiments_dict.items():
+                if key not in ['_id']:
+                    model_key = int(value['model_key'])
+                    models_keys.append(model_key)
+
+                    pick_one_key = int(value['pick_one_key'])
+                    content_key = int(value['content_key'])
+                    contets_keys.append((pick_one_key, content_key))
+
+                    content_answer = {
+                        'model_key': model_key,
+                        'pick_one_key': pick_one_key,
+                        'content_key': content_key
+                    }
+
                     for question in questions:
                         question_id = question['_id']
                         question_key = f'{key}_q{question_id}'
 
-                        result[question_key] = request.form.get(question_key)
-                        print(f"SAVING RESULT result[{question_key}] {result[question_key]}")
+                        content_answer[question_key]:str = request.form.get(question_key) # type: ignore
+
+                    result[f'xp_{key}'] = content_answer
+                    print(f"SAVING RESULT result[xp_{key}]: {result[f'xp_{key}']}")
+
+            models_keys = list(set(models_keys))
+            contets_keys = list(set(contets_keys))
+            increment_visits(models_keys, contets_keys)
 
             result["ethnicity"] = request.form.get("ethnicity")
             result["language"] = request.form.get("language")

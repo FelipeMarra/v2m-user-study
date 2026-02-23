@@ -1,17 +1,17 @@
-from itertools import combinations
-
 from pymongo import MongoClient
 
 from study_template import StudyTemplate, LevelType, Level, LikertQuestion
 
 # Connect with database
 database_url = "localhost:27017"
-database = MongoClient(database_url)
+client = MongoClient(database_url)
+db = client["user_study_test"]
 
 # Create database
-pick_one_col = database["user_study_test"]["control_pick_one"]
-models_comb_col = database["user_study_test"]["control_models_combinations"]
-questions_col = database["user_study_test"]["questions"]
+pick_one_col = db["pick_one"]
+models_col = db["models"]
+questions_col = db["questions"]
+xp_meta_col = db["xp_meta"] # metadata like template's n_models and n_experiments
 
 def register_study(t:StudyTemplate):
     # Register the pick_one_dict with the pick_one_keys, the list of contents inside each key
@@ -22,28 +22,28 @@ def register_study(t:StudyTemplate):
         pick_one_dict = {
             '_id': idx,
             'name': key,
+            'visits': 0,
             'contents': [str(content) for content in values],
-            'visits': [0 for _ in values]
+            'contents_visits': [0 for _ in values]
         }
 
         pick_one_col.insert_one(pick_one_dict)
 
     print(f"Registered {idx+1} pick_one rows.\n\tThe last one is {pick_one_dict}\n")
 
-    # Register model_combintaions with idx, number of times it was visited and the list of models in the combination
-    model_combintaions = combinations(t.models, t.models_comb)
-
-    for idx, models in enumerate(model_combintaions):
-        models_comb_dict = {
+    # Register model with idx, number of times it was visited
+    for idx, model in enumerate(t.models):
+        models_dict = {
             '_id': idx,
             'visits': 0,
-            'names': [model.name for model in models],
-            'paths': [str(model.path.relative_to(t.src_dir)) for model in models]
+            'name': model.name,
+            'ends_with': model.ends_with,
+            'path': str(model.path.relative_to(t.src_dir))
         }
 
-        models_comb_col.insert_one(models_comb_dict)
+        models_col.insert_one(models_dict)
 
-    print(f"Registered {idx+1} model combinations.\n\tThe last one is {models_comb_dict}\n")
+    print(f"Registered {idx+1} models.\n\tThe last one is {models_dict}\n")
 
     # Register questions
     for idx, question in enumerate(t.questions):
@@ -56,6 +56,19 @@ def register_study(t:StudyTemplate):
         questions_col.insert_one(quesntion_dict)
 
     print(f"Registered {idx+1} questions.\n\tThe last one is {quesntion_dict}\n")
+
+    # Register experiments metadata
+    xp_meta_dict = {
+        '_id': 0,
+        'n_experiments': t.n_experiments,
+        'n_models': t.n_models,
+        'gt': t.gt,
+        'gt_ends_with': t.gt_ends_with,
+        'gen_ends_with': t.gen_ends_with
+    }
+    xp_meta_col.insert_one(xp_meta_dict)
+
+    print(f"Registered meta\n\tThe last one is {xp_meta_dict}\n")
 
 def main():
     questions_headers = [
@@ -75,12 +88,15 @@ def main():
 
     koji_gen = StudyTemplate(
         name="Evaluating Generative Music for Videogames",
-        models_comb=3, # Fazer cada modelo separado. Permutar modelos. Pegar uma música aleatória pra cada modelo. Precisa que cada modelo tenha X avaliações e não cada música. Atribuir músicas diferentes é mais pra eliminar o viés da música
+        n_experiments=2,
+        n_models=3, # Fazer cada modelo separado. Permutar modelos. Pegar uma música aleatória pra cada modelo. Precisa que cada modelo tenha X avaliações e não cada música. Atribuir músicas diferentes é mais pra eliminar o viés da música
                        # Fazer original, shufle no modelo -> original, shufle no modelo
                        # Fixar 2 | 1 original + 3 modelos | original 2 + 3 modelos | demográfico
                        # 
                        # Title: Evaluating generative music for videogames
-        ends_with="_gen.mp4",
+        gt="Ground_Truth",
+        gt_ends_with=".mp4",
+        gen_ends_with="_gen.mp4",
         levels = [
             Level("Model", LevelType.MODEL),
             Level("Inference", LevelType.FOLDER, force_folder="inference"),

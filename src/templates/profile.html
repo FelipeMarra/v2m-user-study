@@ -51,7 +51,7 @@
     <div class="p-1"></div>
 
     <form id="profile-form" class="needs-validation" action="http://{{ sever_name }}/end" method="POST">
-        <input type="hidden" name="experiment" id="experiment">
+        <input type="hidden" name="experiments_dict" id="experiments_dict">
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
             <small>
@@ -382,13 +382,14 @@
             return;
         }
 
-        const experiment = JSON.parse(localStorage.getItem("experiment"));
-        const order = localStorage.getItem("order").split(',');
+        // Retrieve experiments_dict data
+        const experiments_dict = JSON.parse(localStorage.getItem("experiments_dict"));
+        const experiments_len = Object.keys(experiments_dict).length 
 
         // Compute paging
         let npage = document.getElementById("npage");
-        npage.innerHTML = npage.innerHTML.replace("I", order.length + 2);
-        npage.innerHTML = npage.innerHTML.replace("N", order.length + 2);
+        npage.innerHTML = npage.innerHTML.replace("I", experiments_len + 2);
+        npage.innerHTML = npage.innerHTML.replace("N", experiments_len + 2);
 
         let ppage = document.getElementById("ppage");
         ppage.style.width = "100%";
@@ -402,29 +403,27 @@
         prevButton.onclick = function() {
             localStorage.setItem("piece_index", pieceIndex - 1);
 
-            const order_experiment = experiment[order[pieceIndex - 1]]
-            const model_comb_key = order_experiment['model_comb_key'][0]
-            const model_comb_idx = order_experiment['model_comb_key'][1]
-            const pick_one_key = order_experiment['content_key'][0]
-            const content_idx = order_experiment['content_key'][1]
+            const current_experiment = experiments_dict[pieceIndex - 1]
+            const model_key = current_experiment['model_key']
+            const pick_one_key = current_experiment['pick_one_key']
+            const content_key = current_experiment['content_key']
 
-            window.location.href = 'http://{{ sever_name }}/evaluate/' + model_comb_key + '/' + model_comb_idx + '/' + pick_one_key + '/' + content_idx;
+            window.location.href = 'http://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
         }
 
-        console.log(JSON.stringify(experiment))
-        document.getElementById('experiment').value = JSON.stringify(experiment);
+        console.log(JSON.stringify(experiments_dict))
+        document.getElementById('experiments_dict').value = JSON.stringify(experiments_dict);
 
         // Add all the answers to the form
-        for (let piece = 0; piece < order.length; piece++) {
-            const questions = JSON.parse('{{ questions | tojson }}');
-
+        const questions = JSON.parse('{{ questions | tojson }}');
+        for (let piece = 0; piece < experiments_len; piece++) {
             questions.forEach(question => {
                 const question_id = question._id
-                const questionAnswer = localStorage.getItem(order[piece] + "_q" + question_id);
+                const questionAnswer = localStorage.getItem(piece + "_q" + question_id);
 
-                console.log(`${piece} | For piece ${order[piece]}, question ${question_id}, answer ${questionAnswer}`)
+                console.log(`For piece ${piece}, question ${question_id}, answer ${questionAnswer}`)
 
-                $('#profile-form').append('<input type="hidden" name="' + order[piece] + "_q" + question_id + '" value="' + questionAnswer + '" />');
+                $('#profile-form').append('<input type="hidden" name="' + piece + "_q" + question_id + '" value="' + questionAnswer + '" />');
             });
         }
     }
