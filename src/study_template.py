@@ -58,6 +58,7 @@ class StudyTemplate:
             n_models:int,
             levels:tp.List[Level], 
             questions:tp.List[LikertQuestion],
+            gt_questions:tp.List[LikertQuestion],
             gt="Ground_Truth",
             gt_ends_with=".mp4",
             gen_ends_with="_gen.mp4", 
@@ -70,6 +71,7 @@ class StudyTemplate:
         self.n_experiments = n_experiments
         self.n_models = n_models
         self.questions = questions
+        self.gt_questions = gt_questions
         self.gt = gt
         self.gt_ends_with = gt_ends_with
         self.gen_ends_with = gen_ends_with

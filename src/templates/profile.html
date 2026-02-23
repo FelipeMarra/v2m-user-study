@@ -30,7 +30,7 @@
         <div class="card-body mx-2">
         <div id="header">
             <img src="http://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" alt="Responsive image" width="30%">
-            <h2 class="font-weight-normal">KojiGen: Video Encoding Methods for the Video-to-Music Task in a Gameplay Dataset</h2>
+            <h2 class="font-weight-normal">{{ title }}</h2>
         </div>
         <sup class="required">* Required</sup>
         </div>
@@ -416,15 +416,30 @@
 
         // Add all the answers to the form
         const questions = JSON.parse('{{ questions | tojson }}');
+        const gt_questions = JSON.parse('{{ gt_questions | tojson }}');
+
         for (let piece = 0; piece < experiments_len; piece++) {
-            questions.forEach(question => {
-                const question_id = question._id
-                const questionAnswer = localStorage.getItem(piece + "_q" + question_id);
+            const current_xp = experiments_dict[piece]
 
-                console.log(`For piece ${piece}, question ${question_id}, answer ${questionAnswer}`)
-
-                $('#profile-form').append('<input type="hidden" name="' + piece + "_q" + question_id + '" value="' + questionAnswer + '" />');
-            });
+            if(current_xp['is_gt']){
+                gt_questions.forEach(question => {
+                    const question_id = question._id
+                    const questionAnswer = localStorage.getItem(piece + "_q" + question_id);
+    
+                    console.log(`For ORIGINAL piece ${piece}, question ${question_id}, answer ${questionAnswer}`)
+    
+                    $('#profile-form').append('<input type="hidden" name="' + piece + "_q" + question_id + '" value="' + questionAnswer + '" />');
+                });
+            } else{
+                questions.forEach(question => {
+                    const question_id = question._id
+                    const questionAnswer = localStorage.getItem(piece + "_q" + question_id);
+    
+                    console.log(`For GENERATED piece ${piece}, question ${question_id}, answer ${questionAnswer}`)
+    
+                    $('#profile-form').append('<input type="hidden" name="' + piece + "_q" + question_id + '" value="' + questionAnswer + '" />');
+                });
+            }
         }
     }
 </script>

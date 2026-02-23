@@ -24,6 +24,7 @@ db = client["user_study_test"]
 pick_one_col = db["pick_one"]
 models_col = db["models"]
 questions_col = db["questions"]
+gt_questions_col = db["gt_questions"]
 xp_meta_col = db["xp_meta"] # metadata like template's n_models and n_experiments
 results_col = db["results"]
 
@@ -32,6 +33,7 @@ app = Flask(__name__)
 VERBOSE = True
 GT_KEY = -1
 GT_ENDS_WITH = ''
+TITLE = ''
 
 def get_models() -> tp.Tuple[tp.List[int], int]:
     global GT_KEY, GT_ENDS_WITH
@@ -131,6 +133,7 @@ def get_contents() -> tp.Tuple[tp.List[tp.Tuple[int, int]], int]:
     return chosen_contents, n_experiments
 
 def get_experiment(models_keys:tp.List[int], gt_key:int, contets_keys:tp.List[tp.Tuple[int, int]], n_experiments:int):
+    global TITLE
     experiments_dict = {}
     counter = 0
 
@@ -147,8 +150,10 @@ def get_experiment(models_keys:tp.List[int], gt_key:int, contets_keys:tp.List[tp
 
         for model_key in shuffled_model_keys:
             pick_one_key, content_key = contets_keys[idx]
+            is_gt = model_key == GT_KEY
             experiments_dict[counter] = {
                 'xp_idx': idx,
+                'is_gt': is_gt,
                 'model_key': model_key,
                 'pick_one_key': pick_one_key,
                 'content_key': content_key
@@ -157,6 +162,10 @@ def get_experiment(models_keys:tp.List[int], gt_key:int, contets_keys:tp.List[tp
             if VERBOSE: print(f"get_experiment experiments_dict {counter}: {experiments_dict[counter]}\n")
 
             counter += 1
+
+    # Set title
+    template_name:str = xp_meta_col.find_one({'_id': 0})['name'] # type: ignore
+    TITLE = template_name
 
     return experiments_dict
 
@@ -176,24 +185,26 @@ def index():
 
     return render_template(
         'index.html', 
+        title = TITLE,
         experiments_dict=experiments_dict,
         sever_name=sever_name
     )
 
-def get_questions():
-    # Get questions
+def get_questions(is_gt:bool):
+    db_col = gt_questions_col if is_gt else questions_col
+
     questions = [
         {
             '_id': question['_id'],
             'header': question['header'],
             'options': list(enumerate(question['options']))
         } 
-        for question in questions_col.find({})
+        for question in db_col.find({})
     ]
 
     return questions
 
-# #TODO: Maybe change to only receive the experiment dict key
+# TODO: Maybe change to only receive the experiment dict key
 @app.route('/evaluate/<model_key>/<pick_one_key>/<content_key>')
 def evaluate(model_key:str, pick_one_key:str, content_key:str):
     model:tp.Dict[str, tp.Any] = models_col.find_one({"_id": int(model_key)}) # type: ignore
@@ -202,18 +213,22 @@ def evaluate(model_key:str, pick_one_key:str, content_key:str):
 
     if VERBOSE: print(f"\n EVAL ROUT: \n\tmodel_key: {model_key}\n\tGT_KEY: {GT_KEY}\n\tgen_ends_with {gen_ends_with}\n\tGT_ENDS_WITH: {GT_ENDS_WITH}")
 
+    is_gt = False
     if model_key == str(GT_KEY):
         content_path = content_path.replace(gen_ends_with, GT_ENDS_WITH)
+        is_gt = True
 
     piece = os.path.join(model['path'], content_path)
 
     # Get questions
-    questions = get_questions()
+    questions = get_questions(is_gt)
 
     if VERBOSE: print(f"EVAL ROUT QUESNTIONS: {questions}\n")
 
+    template = 'gt_evaluate.html' if is_gt else 'evaluate.html'
     return render_template(
-        'evaluate.html', 
+        template,
+        title = TITLE,
         piece=piece,
         questions=questions,
         sever_name=sever_name
@@ -221,12 +236,15 @@ def evaluate(model_key:str, pick_one_key:str, content_key:str):
 
 @app.route('/profile')
 def profile():
-    # Get questions
-    questions = get_questions()
+    questions = get_questions(False)
+    gt_questions = get_questions(True)
 
     return render_template(
-        'profile.html', 
+        'profile.html',
+        title = TITLE,
+        gt_key = GT_KEY,
         questions=questions,
+        gt_questions=gt_questions,
         sever_name=sever_name
     )
 
@@ -272,31 +290,33 @@ def end():
 
             models_keys = []
             contets_keys = []
-            questions = get_questions()
+            questions = get_questions(False)
+            gt_questions = get_questions(True)
 
             for key, value in experiments_dict.items():
-                if key not in ['_id']:
-                    model_key = int(value['model_key'])
-                    models_keys.append(model_key)
+                model_key = int(value['model_key'])
+                models_keys.append(model_key)
 
-                    pick_one_key = int(value['pick_one_key'])
-                    content_key = int(value['content_key'])
-                    contets_keys.append((pick_one_key, content_key))
+                pick_one_key = int(value['pick_one_key'])
+                content_key = int(value['content_key'])
+                contets_keys.append((pick_one_key, content_key))
 
-                    content_answer = {
-                        'model_key': model_key,
-                        'pick_one_key': pick_one_key,
-                        'content_key': content_key
-                    }
+                content_answer = {
+                    'model_key': model_key,
+                    'pick_one_key': pick_one_key,
+                    'content_key': content_key
+                }
 
-                    for question in questions:
-                        question_id = question['_id']
-                        question_key = f'{key}_q{question_id}'
+                my_questions = gt_questions if value['is_gt'] else questions
+                for question in my_questions:
+                    question_id = question['_id']
+                    question_key = f'{key}_q{question_id}'
 
-                        content_answer[question_key]:str = request.form.get(question_key) # type: ignore
+                    content_answer[question_key]:str = request.form.get(question_key) # type: ignore
 
-                    result[f'xp_{key}'] = content_answer
-                    print(f"SAVING RESULT result[xp_{key}]: {result[f'xp_{key}']}")
+                xp_idx = value['xp_idx']
+                result[f'{key}_xp_{xp_idx}'] = content_answer
+                print(f"SAVING RESULT result[{key}_xp_{xp_idx}]: {result[f'{key}_xp_{xp_idx}']}")
 
             models_keys = list(set(models_keys))
             contets_keys = list(set(contets_keys))
@@ -309,10 +329,12 @@ def end():
             result["comments"] = request.form.get("comments")
 
             insert_result = results_col.insert_one(result)
+            print(f"\nEND ROUT POST insert_result:{insert_result}\n")
 
             return redirect(
                 url_for(
-                    'end', 
+                    'end',
+                    title = TITLE,
                     evaluation_id=insert_result.inserted_id,
                     sever_name=sever_name
                 )

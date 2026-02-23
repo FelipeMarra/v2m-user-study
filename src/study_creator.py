@@ -11,6 +11,7 @@ db = client["user_study_test"]
 pick_one_col = db["pick_one"]
 models_col = db["models"]
 questions_col = db["questions"]
+gt_questions_col = db["gt_questions"]
 xp_meta_col = db["xp_meta"] # metadata like template's n_models and n_experiments
 
 def register_study(t:StudyTemplate):
@@ -57,9 +58,21 @@ def register_study(t:StudyTemplate):
 
     print(f"Registered {idx+1} questions.\n\tThe last one is {quesntion_dict}\n")
 
+    for idx, question in enumerate(t.gt_questions):
+        quesntion_dict = {
+            '_id': idx,
+            'header': question.header,
+            'options': question.options
+        }
+
+        gt_questions_col.insert_one(quesntion_dict)
+
+    print(f"Registered {idx+1} questions.\n\tThe last one is {quesntion_dict}\n")
+
     # Register experiments metadata
     xp_meta_dict = {
         '_id': 0,
+        'name': t.name,
         'n_experiments': t.n_experiments,
         'n_models': t.n_models,
         'gt': t.gt,
@@ -72,12 +85,8 @@ def register_study(t:StudyTemplate):
 
 def main():
     questions_headers = [
-        # TODO This music sounds as a retro videogame piece - e.g., SNES
-        # TODO How much this piece sounds as a retro videogame music - e.g., SNES
-        # Strongly Disagree ---- Strongly Agree
-
         # Got from GVMGen -> Equivalent to ImageBind
-        "What is the overall (semantic, emotional and rhythmic) correspondence between this soundtrack and the video?",
+        "What is the overall (semantic, emotional) correspondence between this soundtrack and the video?",
         # Inspired by OSSL -> Equivalent to Genre Classifier
         "What is the overall correspondence between this soundtrack and the genre of the game in the video?",
         # Got from GVMGen -> Equivalent to FAD
@@ -85,15 +94,35 @@ def main():
         # Got from GVMGen -> Equivalent to KLD
         "What is the overall musical quality (rhythm, harmony, melody, form, etc) of this piece?"
     ]
+    questions = [
+        LikertQuestion(
+            header=question_header,
+            options=["Very Poor", "Poor", "Neutral", "Good", "Very Good"]
+        )
+        for question_header in questions_headers
+    ]
+    questions += [
+        LikertQuestion(
+            header="This piece sounds as a retro videogame music - e.g., SNES",
+            options=["Strongly Disagree", "Disagree", "Neutal", "Agree", "Strongly Agree"]
+        )
+    ]
+
+    gt_questions = [
+        LikertQuestion(
+            header="You know the game in this gameplay video",
+            options=["Strongly Disagree", "Disagree", "Neutal", "Agree", "Strongly Agree"]
+        ),
+        LikertQuestion(
+            header="You know the soundtrack in this gameplay video",
+            options=["Strongly Disagree", "Disagree", "Neutal", "Agree", "Strongly Agree"]
+        )
+    ]
 
     koji_gen = StudyTemplate(
         name="Evaluating Generative Music for Videogames",
         n_experiments=2,
-        n_models=3, # Fazer cada modelo separado. Permutar modelos. Pegar uma música aleatória pra cada modelo. Precisa que cada modelo tenha X avaliações e não cada música. Atribuir músicas diferentes é mais pra eliminar o viés da música
-                       # Fazer original, shufle no modelo -> original, shufle no modelo
-                       # Fixar 2 | 1 original + 3 modelos | original 2 + 3 modelos | demográfico
-                       # 
-                       # Title: Evaluating generative music for videogames
+        n_models=3,
         gt="Ground_Truth",
         gt_ends_with=".mp4",
         gen_ends_with="_gen.mp4",
@@ -102,13 +131,8 @@ def main():
             Level("Inference", LevelType.FOLDER, force_folder="inference"),
             Level("Game Genre", LevelType.PICK_ONE)
         ],
-        questions = [
-            LikertQuestion(
-                header=question_header,
-                options=["Very Poor", "Poor", "Neutral", "Good", "Very Good"]
-            )
-            for question_header in questions_headers
-        ]
+        questions = questions,
+        gt_questions = gt_questions
     )
 
     register_study(koji_gen)
