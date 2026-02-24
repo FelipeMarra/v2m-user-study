@@ -10,6 +10,13 @@ var timeline = document.getElementById('timeline'); // timeline
 // timeline width adjusted for playhead
 var timelineWidth = timeline.offsetWidth - playhead.offsetWidth;
 
+function updateTimelineWidth() {
+     timelineWidth = timeline.offsetWidth - playhead.offsetWidth;
+     timeUpdate()
+}
+
+window.addEventListener('resize', updateTimelineWidth);
+
 // timeupdate event listener
 music.addEventListener("timeupdate", timeUpdate, false);
 
