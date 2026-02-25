@@ -6,7 +6,7 @@ body {
 }
 
 .likert-option {
-  width: 75px;
+    width: 75px;
 }
 
 /* For desktop: */
@@ -18,12 +18,12 @@ body {
     }
 
     #header img {
-      padding-top: 20px;
-      padding-bottom: 20px;
+        padding-top: 20px;
+        padding-bottom: 20px;
     }
 
     #header h2 {
-      font-size: 25px;
+        font-size: 25px;
       /* padding-bottom: 20px; */
     }
 }
