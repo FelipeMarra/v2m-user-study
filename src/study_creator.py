@@ -93,48 +93,48 @@ def main():
     questions:tp.List[Question] = [
         # Inspired by GVMGen -> Equivalent to ImageBind
         LikertQuestion(
-            header="How much this generated background music fits this video game scene?",
-            options=["Very Poorly", "Poorly", "Neutral", "Well", "Very Well"]
+            header="O quanto essa música de fundo, gerada automaticamente, se encaixa nessa cena de videogame?",
+            options=["Muito mal", "Mal", "Neutro", "Bem", "Muito bem"]
         ),
         # Inspired by OSSL -> Equivalent to Genre Classifier
         LikertQuestion(
-            header="How much this generated background music fits the PICK_ONE_KEY_NAME of this game?", # In our case the pick_one key name is the game genre
-            options=["Very Poorly", "Poorly", "Neutral", "Well", "Very Well"],
+            header="O quanto essa música de fundo gerada se encaixa no gênero (PICK_ONE_KEY_NAME) deste jogo?", # In our case the pick_one key name is the game genre
+            options=["Muito mal", "Mal", "Neutro", "Bem", "Muito bem"],
             replace="PICK_ONE_KEY_NAME"
         ),
         # Got from GVMGen -> Equivalent to FAD
         LikertQuestion(
-            header="What is the overall audio quality of this generated background music?",
-            options=["Very Poor", "Poor", "Neutral", "Good", "Very Good"]
+            header="Em aspectos gerais, qual a qualidade de áudio dessa música de fundo gerada?",
+            options=["Muito ruim", "Ruim", "Neutra", "Boa", "Muito boa"]
         ),
         # Got from GVMGen -> Equivalent to KLD
         LikertQuestion(
-            header="What is the overall musical quality (rhythm, harmony, melody, form, etc) of this generated background music?",
-            options=["Very Poor", "Poor", "Neutral", "Good", "Very Good"]
+            header="Em aspectos gerais, qual é a qualidade musical (ritmo, harmonia, melodia, forma, etc.) dessa música de fundo gerada?",
+            options=["Muito ruim", "Ruim", "Neutra", "Boa", "Muito boa"]
         ),
         LikertQuestion(
-            header="Does this generated background music sound as a SNES video game music?",
-            options=["Strongly Disagree", "Disagree", "Neutal", "Agree", "Strongly Agree"]
+            header="Essa música de fundo gerada soa como música de video game do SNES?",
+            options=["Discordo totalmente", "Discordo", "Neutro", "Concordo", "Concordo totalmente"]
         )
     ]
 
     gt_questions:tp.List[Question] = [
         BinaryQuestion(
-            header="Do you know this game?",
-            options=["Yes", "No"]
+            header="Você conhece esse jogo?",
+            options=["Sim", "Não"]
         ),
         LikertQuestion(
-            header="Have you played this game before?",
-            options=["Never Played", "Played a Few Times", "It's one of My Favorite Games"]
+            header="Você já jogou esse jogo antes?",
+            options=["Nunca joguei", "Joguei algumas vezes", "É um dos meus jogos favoritos"]
         ),
         BinaryQuestion(
-            header="Do you know the original background music you just listened?",
-            options=["Yes", "No"]
+            header="Você conhece a música de fundo original que acabou de ouvir?",
+            options=["Sim", "Não"]
         )
     ]
 
     koji_gen = StudyTemplate(
-        name="Evaluating Generative Music for Videogames",
+        name="Avaliando Música Generativa para Video Games",
         n_experiments=2,
         n_models=3,
         gt="Ground_Truth",

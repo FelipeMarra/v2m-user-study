@@ -32,7 +32,7 @@
 			<img src="http://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" width="50%" style="min-width: 200px;" alt="Logo">
             <h2 class="font-weight-normal">{{ title }}</h2>
         </div>
-        <sup class="required">* Required</sup>
+        <sup class="required">* Obrigatório</sup>
         </div>
     </div>
 
@@ -42,8 +42,8 @@
         <div class="card-body mx-2">
         <small>
             <!-- #TOD: Mostrar videos dos jogos novamente e perguntar se a pessoa conhece os jogos -->
-            <h6 id="piece-intro">Profile Questionnaire</h6>
-            Please answer the questions below:
+            <h6 id="piece-intro">Questionário de Perfil</h6>
+            Por favor, responda às perguntas abaixo:
         </small>
         </div>
     </div>
@@ -164,10 +164,10 @@
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
             <small>
-                <label for="year"><h6>Birth Year: <sup class="required">*</sup></h6></label>
+                <label for="year"><h6>Ano de Nascimento: <sup class="required">*</sup></h6></label>
                 <!-- #TODO start_year = current_year-18 | end year = start_year-100 -->
                 <select class="form-control dropdown" id="year" name="year" required>
-                    <option value="" selected="selected" disabled="disabled">Choose...</option>
+                    <option value="" selected="selected" disabled="disabled">Escolha...</option>
                     <option value="2008">2008</option>
                     <option value="2007">2007</option>
                     <option value="2006">2006</option>
@@ -244,13 +244,13 @@
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
             <small>
-                <label for="gender"><h6>Gender: <sup class="required">*</sup></h6></label>
+                <label for="gender"><h6>Gênero: <sup class="required">*</sup></h6></label>
                 <select class="form-control dropdown" id="gender" name="gender" required>
                     <option value="" selected="selected" disabled="disabled">Choose...</option>
-                    <option value="Female">I identify myself as Female</option>
-                    <option value="Male">I identify myself as Male</option>
-                    <option value="NonBinary">I identify myself as Non-binary</option>
-                    <option value="Other">Other</option>
+                    <option value="Female">Eu me identifico como mulher.</option>
+                    <option value="Male">Eu me identifico como homem.</option>
+                    <option value="NonBinary">Eu me identifico como não-binário.</option>
+                    <option value="Other">Outro</option>
                 </select>
 
                 <div class="col-2"></div>
@@ -262,27 +262,27 @@
 
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
-                <label for="xp"><h6>Highest Level of Formal Music Training:<sup class="required">*</sup></h6></label>
+                <label for="xp"><h6>Nível mais elevado de formação musical formal:<sup class="required">*</sup></h6></label>
                 <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-2 likert" >
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="xp" value="0" required>
-                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio0">None</label>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio0">Nenhum</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="xp" value="1" required>
-                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio1">Primary</br>(Elementary school level)</label>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio1">Primário</br>(Fiz algumas aulas)</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="xp" value="2" required>
-                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio2">Secondary</br>(High school level)</label>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio2">Secundário</br>(Estou Cursando Música)</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="xp" value="3" required>
-                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio3">Tertiary</br>(Undergraduate level)</label>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio3">Terciário</br>(Sou Graduado em Música)</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="xp"  value="4" required>
-                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio4">Post-graduate</label>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio4">Pós-graduado</label>
                     </div>
                 </div>
             </div>
@@ -292,19 +292,19 @@
 
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
-                <label for="play_freq"><h6>How often do you play video games?<sup class="required">*</sup></h6></label>
+                <label for="play_freq"><h6>Com que frequência você joga videogames?<sup class="required">*</sup></h6></label>
                 <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-2 likert" >
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="play_freq" value="0" required>
-                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio0">Never played</label>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio0">Nunca joguei</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="play_freq" value="1" required>
-                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio1">Played a few times</label>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio1">Joguei algumas vezes</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="play_freq" value="2" required>
-                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio2">It's my favorite hobby</label>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio2">É meu passa-tempo favorito</label>
                     </div>
                 </div>
             </div>
@@ -314,27 +314,27 @@
 
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
-                <label for="snes_familiarity"><h6>How familiar are you with Super Nintendo Entertainment System (SNES) games?<sup class="required">*</sup></h6></label>
+                <label for="snes_familiarity"><h6>O quão familiar você é com jogos de Super Nintendo (SNES)?<sup class="required">*</sup></h6></label>
                 <div class="d-flex flex-wrap gap-3 mt-2 likert" >
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="0" required>
-                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio0">I don't know what SNES is</label>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio0">Não sei o que é SNES</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="1" required>
-                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio1">I know about it but never played</label>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio1">Sei a respeito mas nunca joguei</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="2" required>
-                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio2">Played a few times</label>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio2">Já joguei algumas vezes</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="3" required>
-                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio3">Played many times</label>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio3">Já joguei muitas vezes</label>
                     </div>
                     <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                         <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="4" required>
-                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio4">It's my favorite video game console</label>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio4">É meu consolde de video game favorito</label>
                     </div>
                 </div>
             </div>
@@ -345,7 +345,7 @@
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
             <small>
-                <label for="comments"><h6>Please let us know if you have any comments about our experiment.</h6></label>
+                <label for="comments"><h6>Por favor, nos informe se você tiver algum comentário sobre nosso experimento.</h6></label>
                 <input type="text" class="form-control" placeholder="Your Answer..." name="comments" id="comments">
 
                 <div class="col-2"></div>
@@ -357,8 +357,8 @@
 
         <div class="d-flex flex-row align-items-md-center justify-content-between mt-2 mb-2 gap-3">
             <div class="d-flex gap-1">
-                <button id="prevButton" type="button" class="btn btn-page bg-white ml-2" onclick="">Back</button>
-                <button id="nextButton" type="submit" class="btn btn-page bg-white ml-2" >Next</button>
+                <button id="prevButton" type="button" class="btn btn-page bg-white ml-2" onclick="">Anterior</button>
+                <button id="nextButton" type="submit" class="btn btn-page bg-white ml-2" >Próximo</button>
             </div>
 
             <div class="d-flex align-items-center gap-1 w-50 w-md-auto m-2">
@@ -369,7 +369,7 @@
 
             <div class="d-flex gap-1 ml-2">
                 <span id="npage" class="align-items-center">
-                    Page I of N
+                    Página I de N
                 </span>
             </div>
         </div>
