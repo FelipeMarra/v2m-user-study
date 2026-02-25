@@ -108,48 +108,38 @@
 
         <div id="question{{question['_id']}}" class="card bg-white borderrounded" hidden>
             <div class="card-body mx-2">
-                <small>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-sm">
-                                <label for="question{{question['_id']}}"><h6> {{question['header']}} <sup class="required">*</sup></h6></label>
+                <label for="question{{question['_id']}}"><h6> {{question['header']}} <sup class="required">*</sup></h6></label>
 
-                                <div id="question{{question['_id']}}-input" class="likert" onclick="question_onclick({{question['_id']}})">
-                                    {% for op_value, op_txt in question['options'] %}
-                                        <div class="likert-option form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="question{{question['_id']}}" value={{op_value}} />
-                                            <label class="form-check-label">{{op_txt}}</label>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
+                <div id="question{{question['_id']}}-input" class="d-flex flex-wrap flex-md-nowrap gap-3 mt-2 likert" onclick="question_onclick({{question['_id']}})">
+                    {% for op_value, op_txt in question['options'] %}
+                        <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                            <input class="form-check-input me-2" type="radio" name="question{{question['_id']}}" value="{{op_value}}" />
+                            <label class="form-check-label text-nowrap mt-1">{{op_txt}}</label>
                         </div>
-                    </div>
-                </small>
+                    {% endfor %}
+                </div>
             </div>
         </div>
         {% endfor %}
 
         <div class="p-1"></div>
 
-        <div class="row align-items-center mt-2 mb-2">
-            <div class="col-4">
-                <button id="prevButton" type="button" class="btn-page btn border rounded bg-white" onclick="">Back</button>
-                <button id="nextButton" type="submit" class="btn-page btn border bg-white rounded">Next</button>
+        <div class="d-flex flex-row align-items-md-center justify-content-between mt-2 mb-2 gap-3">
+            <div class="d-flex gap-1">
+                <button id="prevButton" type="button" class="btn btn-page bg-white ml-2" onclick="">Back</button>
+                <button id="nextButton" type="submit" class="btn btn-page bg-white ml-2" >Next</button>
             </div>
 
-            <div class="col">
-                <div class="row align-items-center justify-content-end">
-                    <div class="col">
-                        <div id="ppage-back" class="progress bg-secondary" style="height: 10px;">
-                            <div id="ppage" class="progress-bar" role="progressbar"></div>
-                        </div>
-                    </div>
-
-                    <div class="col-6">
-                        <label id="npage">Page I of N</label>
-                    </div>
+            <div class="d-flex align-items-center gap-1 w-50 w-md-auto">
+                <div id="ppage-back" class="progress bg-secondary flex-grow-1 ml-2" style="height: 10px; min-width: 50px;">
+                    <div id="ppage" class="progress-bar" role="progressbar"></div>
                 </div>
+            </div>
+
+            <div class="d-flex gap-1 ml-2">
+                <span id="npage" class="align-items-center">
+                    Page I of N
+                </span>
             </div>
         </div>
     </form>

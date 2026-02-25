@@ -342,16 +342,12 @@ def end():
 
             insert_result = results_col.insert_one(result)
             evaluation_id = str(insert_result.inserted_id)
-            # TODO
-            print(f"\nEND ROUT POST insert_result:{evaluation_id} {type(evaluation_id)}\n")
 
-            return redirect(
-                url_for(
-                    'end',
-                    title = TITLE,
-                    evaluation_id = evaluation_id,
-                    sever_name = sever_name
-                )
+            return render_template(
+                'end.html',
+                title = TITLE,
+                evaluation_id = evaluation_id,
+                sever_name = sever_name
             )
     else:
         return render_template('end.html', sever_name=sever_name)

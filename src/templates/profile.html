@@ -262,35 +262,29 @@
 
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
-            <small>
                 <label for="xp"><h6>Highest Level of Formal Music Training:<sup class="required">*</sup></h6></label>
-                <div class="btn-toolbar d-flex justify-content-center" role="toolbar" >
-                    <div class="btn-group" role="group" >
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="xp" id="music-exp-1" value="1" required>
-                        <label class="form-check-label" for="inlineRadio1">None</label>
+                <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-2 likert" >
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp" value="0" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio0">None</label>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="xp" id="music-exp-2" value="2" required>
-                        <label class="form-check-label" for="inlineRadio2">Primary</br>(Elementary school level)</label>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp" value="1" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio1">Primary</br>(Elementary school level)</label>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="xp" id="music-exp-3" value="3" required>
-                        <label class="form-check-label" for="inlineRadio3">Secondary</br>(High school level)</label>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp" value="2" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio2">Secondary</br>(High school level)</label>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="xp" id="music-exp-4" value="4" required>
-                        <label class="form-check-label" for="inlineRadio3">Tertiary</br>(Undergraduate level)</label>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp" value="3" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio3">Tertiary</br>(Undergraduate level)</label>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="xp" id="music-exp-5" value="5" required>
-                        <label class="form-check-label" for="inlineRadio3">Post-graduate</label>
-                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp"  value="4" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio4">Post-graduate</label>
                     </div>
                 </div>
-
-                <div class="col-2"></div>
-            </small>
             </div>
         </div>
 
@@ -298,17 +292,21 @@
 
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
-            <small>
                 <label for="play_freq"><h6>How often do you play video games?<sup class="required">*</sup></h6></label>
-                <select class="form-control dropdown" id="play_freq" name="play_freq" required>
-                    <option value="" selected="selected" disabled="disabled">Choose...</option>
-                    <option value="0">Never played</option>
-                    <option value="1">Played a few times</option>
-                    <option value="2">It's my favorite hobby</option>
-                </select>
-
-                <div class="col-2"></div>
-            </small>
+                <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-2 likert" >
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="play_freq" value="0" required>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio0">Never played</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="play_freq" value="1" required>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio1">Played a few times</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="play_freq" value="2" required>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio2">It's my favorite hobby</label>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -316,24 +314,33 @@
 
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
-            <small>
                 <label for="snes_familiarity"><h6>How familiar are you with Super Nintendo Entertainment System (SNES) games?<sup class="required">*</sup></h6></label>
-                <select class="form-control dropdown" id="snes_familiarity" name="snes_familiarity" required>
-                    <option value="" selected="selected" disabled="disabled">Choose...</option>
-                    <option value="0">I don't know what SNES is</option>
-                    <option value="1">I know about it but never played</option>
-                    <option value="2">Played a few times</option>
-                    <option value="3">Played many times</option>
-                    <option value="4">It's my favorite video game console</option>
-                </select>
-
-                <div class="col-2"></div>
-            </small>
+                <div class="d-flex flex-wrap gap-3 mt-2 likert" >
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="0" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio0">I don't know what SNES is</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="1" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio1">I know about it but never played</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="2" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio2">Played a few times</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="3" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio3">Played many times</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="4" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio4">It's my favorite video game console</label>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="p-1"></div>
-
 
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
@@ -348,24 +355,22 @@
 
         <div class="p-1"></div>
 
-        <div class="row align-items-center mt-2 mb-2">
-            <div class="col-4">
-                <button id="prevButton" type="button" class="btn-page btn border rounded bg-white" onclick="">Back</button>
-                <button id="nextButton" type="submit" class="btn-page btn border bg-white rounded">Submit</button>
+        <div class="d-flex flex-row align-items-md-center justify-content-between mt-2 mb-2 gap-3">
+            <div class="d-flex gap-1">
+                <button id="prevButton" type="button" class="btn btn-page bg-white ml-2" onclick="">Back</button>
+                <button id="nextButton" type="submit" class="btn btn-page bg-white ml-2" >Next</button>
             </div>
 
-            <div class="col">
-                <div class="row align-items-center justify-content-end">
-                    <div class="col">
-                        <div id="ppage-back" class="progress bg-secondary" style="height: 10px;">
-                            <div id="ppage" class="progress-bar" role="progressbar"></div>
-                        </div>
-                    </div>
-
-                    <div class="col-6">
-                        <label id="npage">Page I of N</label>
-                    </div>
+            <div class="d-flex align-items-center gap-1 w-50 w-md-auto m-2">
+                <div id="ppage-back" class="progress bg-secondary flex-grow-1 ml-2" style="height: 10px; min-width: 50px;">
+                    <div id="ppage" class="progress-bar" role="progressbar"></div>
                 </div>
+            </div>
+
+            <div class="d-flex gap-1 ml-2">
+                <span id="npage" class="align-items-center">
+                    Page I of N
+                </span>
             </div>
         </div>
     </form>

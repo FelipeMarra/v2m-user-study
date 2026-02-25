@@ -35,8 +35,8 @@ body {
 .btn-page {
     /* background: white !important; */
     color: #4154B3 !important;
-    width: 80px;
     font-size: 14px;
+    border: 25%;
 }
 
 .progress-bar {
