@@ -43,12 +43,29 @@ class ModelData:
 
         self.contents:tp.List[Path] = []
 
-class LikertQuestion:
-    def __init__(self, header:str, options:tp.List[str]) -> None:
+class Question:
+    def __init__(self, header:str, options:tp.List[str], replace:tp.Optional[str]=None) -> None:
         self.header = header
         self.options = options
+        self.replace = replace
 
-        assert len(options) == 5, "len options in LikertQuestion should be == 5"
+        assert len(self.header) > 0, "Header must not be empty"
+        assert len(self) > 1, "Options must have at least len 2"
+
+    def __len__(self):
+        return len(self.options)
+
+class BinaryQuestion(Question):
+    def __init__(self, header:str, options:tp.List[str], replace:tp.Optional[str]=None) -> None:
+        super().__init__(header, options, replace)
+
+        assert len(self) == 2, "len options in BinaryQuestion should be == 2"
+
+class LikertQuestion(Question):
+    def __init__(self, header:str, options:tp.List[str], replace:tp.Optional[str]=None)-> None:
+        super().__init__(header, options, replace)
+
+        assert len(self) in [3, 5, 7, 9], "len options in LikertQuestion should be in [3, 5, 7, 9]"
 
 class StudyTemplate:
     def __init__(
@@ -57,8 +74,8 @@ class StudyTemplate:
             n_experiments:int,
             n_models:int,
             levels:tp.List[Level], 
-            questions:tp.List[LikertQuestion],
-            gt_questions:tp.List[LikertQuestion],
+            questions:tp.List[Question],
+            gt_questions:tp.List[Question],
             gt="Ground_Truth",
             gt_ends_with=".mp4",
             gen_ends_with="_gen.mp4", 
@@ -161,7 +178,7 @@ class StudyTemplate:
 
     def _set_models_paths(self):
         for model in self.models:
-            for key, values in self._pick_one_dict.items():
+            for _, values in self._pick_one_dict.items():
                 for value in values:
                     model_content_path = model.path.joinpath(value).relative_to(self.src_dir)
                     model.contents.append(model_content_path)

@@ -190,17 +190,24 @@ def index():
         sever_name=sever_name
     )
 
-def get_questions(is_gt:bool):
+def get_questions(is_gt:bool, replace_dict:dict[str, str]={}):
     db_col = gt_questions_col if is_gt else questions_col
+    questions = []
 
-    questions = [
-        {
+    for question in db_col.find({}):
+        header:str = question['header']
+
+        replace_match = replace_dict.get(question['replace'])
+
+        if replace_match:
+            header = header.replace(question['replace'], replace_match)
+
+        questions.append({
             '_id': question['_id'],
-            'header': question['header'],
-            'options': list(enumerate(question['options']))
-        } 
-        for question in db_col.find({})
-    ]
+            'header': header,
+            'options': list(enumerate(question['options'])),
+            'len': question['len'],
+        })
 
     return questions
 
@@ -208,6 +215,7 @@ def get_questions(is_gt:bool):
 @app.route('/evaluate/<model_key>/<pick_one_key>/<content_key>')
 def evaluate(model_key:str, pick_one_key:str, content_key:str):
     model:tp.Dict[str, tp.Any] = models_col.find_one({"_id": int(model_key)}) # type: ignore
+    pick_one_key_name:str = pick_one_col.find_one({"_id": int(pick_one_key)})['name'] # type: ignore
     content_path:str = pick_one_col.find_one({"_id": int(pick_one_key)})['contents'][int(content_key)] # type: ignore
     gen_ends_with:str = xp_meta_col.find_one({'_id': 0})['gen_ends_with'] # type: ignore
 
@@ -221,7 +229,8 @@ def evaluate(model_key:str, pick_one_key:str, content_key:str):
     piece = os.path.join(model['path'], content_path)
 
     # Get questions
-    questions = get_questions(is_gt)
+    replace_dict = {'PICK_ONE_KEY_NAME': pick_one_key_name}
+    questions = get_questions(is_gt, replace_dict)
 
     if VERBOSE: print(f"EVAL ROUT QUESNTIONS: {questions}\n")
 
@@ -322,21 +331,26 @@ def end():
             contets_keys = list(set(contets_keys))
             increment_visits(models_keys, contets_keys)
 
-            result["ethnicity"] = request.form.get("ethnicity")
-            result["language"] = request.form.get("language")
-            result["year"]     = request.form.get("year")
-            result["xp"]       = request.form.get("xp")
+            #result["ethnicity"] = request.form.get("ethnicity")
+            #result["language"] = request.form.get("language")
+            result["year"] = request.form.get("year")
+            result["xp"] = request.form.get("xp")
+            result["gender"] = request.form.get("gender")
             result["comments"] = request.form.get("comments")
+            result["play_freq"] = request.form.get("play_freq")
+            result["snes_familiarity"] = request.form.get("snes_familiarity")
 
             insert_result = results_col.insert_one(result)
-            print(f"\nEND ROUT POST insert_result:{insert_result}\n")
+            evaluation_id = str(insert_result.inserted_id)
+            # TODO
+            print(f"\nEND ROUT POST insert_result:{evaluation_id} {type(evaluation_id)}\n")
 
             return redirect(
                 url_for(
                     'end',
                     title = TITLE,
-                    evaluation_id=insert_result.inserted_id,
-                    sever_name=sever_name
+                    evaluation_id = evaluation_id,
+                    sever_name = sever_name
                 )
             )
     else:

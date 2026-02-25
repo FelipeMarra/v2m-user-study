@@ -44,7 +44,7 @@
             <div class="card-body mx-2">
             <small>
                 <label for="">
-                <h6 id="piece-name">Listen to the <strong> GENERATED </strong> video game music piece: <sup class="required">*</sup></h6>
+                <h6 id="piece-name">Listen to the following <strong> GENERATED </strong> background music of this video game: <sup class="required">*</sup></h6>
                 </label>
 
                 <div class="container">
@@ -306,15 +306,20 @@
         let pieceIndex = parseInt(localStorage.getItem("piece_index"));
         const questions = JSON.parse('{{ questions | tojson }}');
 
+        is_all_answered = true
         questions.forEach(question => {
             const question_id = question._id
             const questionAnswer = document.forms["evaluate-form"]["question"+question_id].value;
 
             if(!questionAnswer){
-                alert("Please answer all the questions.");
-                return false;
+                is_all_answered = false
             }
         });
+
+        if(!is_all_answered){
+            alert("Please answer all the questions.");
+            return false
+        }
 
         saveForm();
 

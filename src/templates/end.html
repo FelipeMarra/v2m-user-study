@@ -29,10 +29,12 @@
 		<div id="header">
 			<img src="http://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" width="50%" style="min-width: 200px;" alt="Logo">
 			<h2 class="font-weight-normal">{{ title }}</h2>
+            <!-- #TODO EVAL ID -->
+			<h2 class="font-weight-normal">{{ evaluation_id }}</h2>
 		</div>
 
 			<small>
-			<p>Thank you for taking part in our experiment! Your response has been recorded. Your completion code <mark id="evaluation_id"></mark><br><br>
+			<p>Thank you for taking part in our experiment! Your response has been recorded. Your completion code <mark id="evaluation_id">{{ evaluation_id }}</mark><br><br>
 			Version Date: 20 Feb 2026
 			</p>
 			</small>
@@ -49,15 +51,19 @@
 
         if (!evaluationId) {
             if (location.search) {
-                evaluationId = location.search.split('?')[1].split('&')[0].split('evaluation_id=')[1]
-                document.getElementById("evaluation_id").innerHTML = evaluationId;
-
-                // Experiment is complete, erase saved information
+                evaluationIdURL = location.search.split('?')[1].split('&')[0].split('evaluation_id=')[1]
+                console.log("LOCATION SEARCH", location.search.split('?')) // #TODO: REMOVE
+                console.log("evaluationIdURL", evaluationIdURL) // #TODO: REMOVE
+                console.log("evaluationId from flask", evaluationIdURL) // #TODO: REMOVE
+                
+                // Experiment is complete, reset local storage and save elvaluation id
+                evaluationId = document.getElementById("evaluation_id").innerHTML;
                 localStorage.clear();
                 localStorage.setItem("evaluation_id", evaluationId);
             }
         }
         else {
+            console.log("CAIU NO ELSE")
             document.getElementById("evaluation_id").innerHTML = evaluationId;
 
             // Experiment is complete, erase saved information

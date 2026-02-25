@@ -1,6 +1,8 @@
+import typing as tp
+
 from pymongo import MongoClient
 
-from study_template import StudyTemplate, LevelType, Level, LikertQuestion
+from study_template import StudyTemplate, LevelType, Level, Question, LikertQuestion, BinaryQuestion
 
 # Connect with database
 database_url = "localhost:27017"
@@ -51,7 +53,9 @@ def register_study(t:StudyTemplate):
         quesntion_dict = {
             '_id': idx,
             'header': question.header,
-            'options': question.options
+            'options': question.options,
+            'len': len(question),
+            'replace': question.replace
         }
 
         questions_col.insert_one(quesntion_dict)
@@ -62,7 +66,9 @@ def register_study(t:StudyTemplate):
         quesntion_dict = {
             '_id': idx,
             'header': question.header,
-            'options': question.options
+            'options': question.options,
+            'len': len(question),
+            'replace': question.replace
         }
 
         gt_questions_col.insert_one(quesntion_dict)
@@ -84,38 +90,46 @@ def register_study(t:StudyTemplate):
     print(f"Registered meta\n\tThe last one is {xp_meta_dict}\n")
 
 def main():
-    questions_headers = [
-        # Got from GVMGen -> Equivalent to ImageBind
-        "What is the overall (semantic, emotional) correspondence between this soundtrack and the video?",
+    questions:tp.List[Question] = [
+        # Inspired by GVMGen -> Equivalent to ImageBind
+        LikertQuestion(
+            header="How much this generated background music fits this video game scene?",
+            options=["Very Poorly", "Poorly", "Neutral", "Well", "Very Well"]
+        ),
         # Inspired by OSSL -> Equivalent to Genre Classifier
-        "What is the overall correspondence between this soundtrack and the genre of the game in the video?",
+        LikertQuestion(
+            header="How much this generated background music fits the PICK_ONE_KEY_NAME of this game?", # In our case the pick_one key name is the game genre
+            options=["Very Poorly", "Poorly", "Neutral", "Well", "Very Well"],
+            replace="PICK_ONE_KEY_NAME"
+        ),
         # Got from GVMGen -> Equivalent to FAD
-        "What is the overall audio quality of this piece?",
-        # Got from GVMGen -> Equivalent to KLD
-        "What is the overall musical quality (rhythm, harmony, melody, form, etc) of this piece?"
-    ]
-    questions = [
         LikertQuestion(
-            header=question_header,
+            header="What is the overall audio quality of this generated background music?",
             options=["Very Poor", "Poor", "Neutral", "Good", "Very Good"]
-        )
-        for question_header in questions_headers
-    ]
-    questions += [
+        ),
+        # Got from GVMGen -> Equivalent to KLD
         LikertQuestion(
-            header="This piece sounds as a retro videogame music - e.g., SNES",
+            header="What is the overall musical quality (rhythm, harmony, melody, form, etc) of this generated background music?",
+            options=["Very Poor", "Poor", "Neutral", "Good", "Very Good"]
+        ),
+        LikertQuestion(
+            header="Does this generated background music sound as a SNES video game music?",
             options=["Strongly Disagree", "Disagree", "Neutal", "Agree", "Strongly Agree"]
         )
     ]
 
-    gt_questions = [
-        LikertQuestion(
-            header="You know the game in this gameplay video",
-            options=["Strongly Disagree", "Disagree", "Neutal", "Agree", "Strongly Agree"]
+    gt_questions:tp.List[Question] = [
+        BinaryQuestion(
+            header="Do you know this game?",
+            options=["Yes", "No"]
         ),
         LikertQuestion(
-            header="You know the soundtrack in this gameplay video",
-            options=["Strongly Disagree", "Disagree", "Neutal", "Agree", "Strongly Agree"]
+            header="Have you played this game before?",
+            options=["Never Played", "Played a Few Times", "It's one of My Favorite Games"]
+        ),
+        BinaryQuestion(
+            header="Do you know the original background music you just listened?",
+            options=["Yes", "No"]
         )
     ]
 

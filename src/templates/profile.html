@@ -52,7 +52,7 @@
 
     <form id="profile-form" class="needs-validation" action="http://{{ sever_name }}/end" method="POST">
         <input type="hidden" name="experiments_dict" id="experiments_dict">
-        <div class="card bg-white border rounded">
+        <!-- <div class="card bg-white border rounded">
             <div class="card-body mx-2">
             <small>
                 <label for="ethnicity"><h6>Ethnicity: <sup class="required">*</sup></h6></label>
@@ -70,11 +70,11 @@
             </small>
 
             </div>
-        </div>
+        </div> -->
 
-    <div class="p-1"></div>
+    <!-- <div class="p-1"></div> -->
 
-        <div class="card bg-white border rounded">
+        <!-- <div class="card bg-white border rounded">
             <div class="card-body mx-2">
             <small>
                 <label for="language"><h6>First Language: <sup class="required">*</sup></h6></label>
@@ -157,7 +157,7 @@
                 <div class="col-2"></div>
             </small>
             </div>
-        </div>
+        </div> -->
 
         <div class="p-1"></div>
 
@@ -232,46 +232,6 @@
                     <option value="1947">1947</option>
                     <option value="1946">1946</option>
                     <option value="1945">1945</option>
-                    <option value="1944">1944</option>
-                    <option value="1943">1943</option>
-                    <option value="1942">1942</option>
-                    <option value="1941">1941</option>
-                    <option value="1940">1940</option>
-                    <option value="1939">1939</option>
-                    <option value="1938">1938</option>
-                    <option value="1937">1937</option>
-                    <option value="1936">1936</option>
-                    <option value="1935">1935</option>
-                    <option value="1934">1934</option>
-                    <option value="1933">1933</option>
-                    <option value="1932">1932</option>
-                    <option value="1931">1931</option>
-                    <option value="1930">1930</option>
-                    <option value="1929">1929</option>
-                    <option value="1928">1928</option>
-                    <option value="1927">1927</option>
-                    <option value="1926">1926</option>
-                    <option value="1925">1925</option>
-                    <option value="1924">1924</option>
-                    <option value="1923">1923</option>
-                    <option value="1922">1922</option>
-                    <option value="1921">1921</option>
-                    <option value="1920">1920</option>
-                    <option value="1919">1919</option>
-                    <option value="1918">1918</option>
-                    <option value="1917">1917</option>
-                    <option value="1916">1916</option>
-                    <option value="1915">1915</option>
-                    <option value="1914">1914</option>
-                    <option value="1913">1913</option>
-                    <option value="1912">1912</option>
-                    <option value="1911">1911</option>
-                    <option value="1910">1910</option>
-                    <option value="1909">1909</option>
-                    <option value="1908">1908</option>
-                    <option value="1907">1907</option>
-                    <option value="1906">1906</option>
-                    <option value="1905">1905</option>
                 </select>
 
                 <div class="col-2"></div>
@@ -339,6 +299,45 @@
         <div class="card bg-white border rounded">
             <div class="card-body mx-2">
             <small>
+                <label for="play_freq"><h6>How often do you play video games?<sup class="required">*</sup></h6></label>
+                <select class="form-control dropdown" id="play_freq" name="play_freq" required>
+                    <option value="" selected="selected" disabled="disabled">Choose...</option>
+                    <option value="0">Never played</option>
+                    <option value="1">Played a few times</option>
+                    <option value="2">It's my favorite hobby</option>
+                </select>
+
+                <div class="col-2"></div>
+            </small>
+            </div>
+        </div>
+
+        <div class="p-1"></div>
+
+        <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+            <small>
+                <label for="snes_familiarity"><h6>How familiar are you with Super Nintendo Entertainment System (SNES) games?<sup class="required">*</sup></h6></label>
+                <select class="form-control dropdown" id="snes_familiarity" name="snes_familiarity" required>
+                    <option value="" selected="selected" disabled="disabled">Choose...</option>
+                    <option value="0">I don't know what SNES is</option>
+                    <option value="1">I know about it but never played</option>
+                    <option value="2">Played a few times</option>
+                    <option value="3">Played many times</option>
+                    <option value="4">It's my favorite video game console</option>
+                </select>
+
+                <div class="col-2"></div>
+            </small>
+            </div>
+        </div>
+
+        <div class="p-1"></div>
+
+
+        <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+            <small>
                 <label for="comments"><h6>Please let us know if you have any comments about our experiment.</h6></label>
                 <input type="text" class="form-control" placeholder="Your Answer..." name="comments" id="comments">
 
@@ -346,6 +345,8 @@
             </small>
             </div>
         </div>
+
+        <div class="p-1"></div>
 
         <div class="row align-items-center mt-2 mb-2">
             <div class="col-4">
