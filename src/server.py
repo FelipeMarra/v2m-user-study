@@ -190,6 +190,20 @@ def index():
         sever_name=sever_name
     )
 
+translation_dict:dict[str, str] = {
+    "Action": "Ação", 
+    "Adventure": "Aventura",
+    "Fighting": "Luta",
+    "Platform": "Plataforma",
+    "Puzzle": "Puzzle/Quebra-cabeça",
+    "Racing": "Correida",
+    "RPG": "RPG",
+    "Shooters": "Tiro",
+    "Simulation": "Simulação",
+    "Sports": "Esportes",
+    "Strategy": "Estratégia"
+}
+
 def get_questions(is_gt:bool, replace_dict:dict[str, str]={}):
     db_col = gt_questions_col if is_gt else questions_col
     questions = []
@@ -200,7 +214,7 @@ def get_questions(is_gt:bool, replace_dict:dict[str, str]={}):
         replace_match = replace_dict.get(question['replace'])
 
         if replace_match:
-            header = header.replace(question['replace'], replace_match)
+            header = header.replace(question['replace'], translation_dict[replace_match])
 
         questions.append({
             '_id': question['_id'],

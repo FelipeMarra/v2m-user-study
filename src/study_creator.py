@@ -94,23 +94,23 @@ def main():
         # Inspired by GVMGen -> Equivalent to ImageBind
         LikertQuestion(
             header="O quanto essa música de fundo, gerada automaticamente, se encaixa nessa cena de videogame?",
-            options=["Muito mal", "Mal", "Neutro", "Bem", "Muito bem"]
+            options=["Muito mal", "Mal", "Moderadamente", "Bem", "Muito bem"]
         ),
         # Inspired by OSSL -> Equivalent to Genre Classifier
         LikertQuestion(
             header="O quanto essa música de fundo gerada se encaixa no gênero (PICK_ONE_KEY_NAME) deste jogo?", # In our case the pick_one key name is the game genre
-            options=["Muito mal", "Mal", "Neutro", "Bem", "Muito bem"],
+            options=["Muito mal", "Mal", "Moderadamente", "Bem", "Muito bem"],
             replace="PICK_ONE_KEY_NAME"
         ),
         # Got from GVMGen -> Equivalent to FAD
         LikertQuestion(
-            header="Em aspectos gerais, qual a qualidade de áudio dessa música de fundo gerada?",
-            options=["Muito ruim", "Ruim", "Neutra", "Boa", "Muito boa"]
+            header="Qual a qualidade do áudio dessa música de fundo gerada?",
+            options=["Muito ruim", "Ruim", "Moderada", "Boa", "Muito boa"]
         ),
         # Got from GVMGen -> Equivalent to KLD
         LikertQuestion(
-            header="Em aspectos gerais, qual é a qualidade musical (ritmo, harmonia, melodia, forma, etc.) dessa música de fundo gerada?",
-            options=["Muito ruim", "Ruim", "Neutra", "Boa", "Muito boa"]
+            header="Qual é a qualidade da composição (ritmo, harmonia, melodia, forma, etc.) dessa música de fundo gerada?",
+            options=["Muito ruim", "Ruim", "Moderada", "Boa", "Muito boa"]
         ),
         LikertQuestion(
             header="Essa música de fundo gerada soa como música de video game do SNES?",
@@ -125,7 +125,7 @@ def main():
         ),
         LikertQuestion(
             header="Você já jogou esse jogo antes?",
-            options=["Nunca joguei", "Joguei algumas vezes", "É um dos meus jogos favoritos"]
+            options=["Nunca joguei", "Joguei algumas vezes", "Joguei várias vezes"]
         ),
         BinaryQuestion(
             header="Você conhece a música de fundo original que acabou de ouvir?",
@@ -134,7 +134,7 @@ def main():
     ]
 
     koji_gen = StudyTemplate(
-        name="Avaliando Música Generativa para Video Games",
+        name="Avaliando Modelos de Geração de Música para Video Games",
         n_experiments=2,
         n_models=3,
         gt="Ground_Truth",

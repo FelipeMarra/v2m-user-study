@@ -44,7 +44,8 @@
             <div class="card-body mx-2">
             <small>
                 <label for="">
-                <h6 id="piece-name">Ouça a música de fundo <strong> ORIGINAL </strong> deste video game: <sup class="required">*</sup></h6>
+                <h6 id="piece-name">Experimento XP, música <strong> ORIGINAL.</strong></h6>
+                <h6>Ouça a música de fundo <strong> ORIGINAL </strong> deste jogo de video game: <sup class="required">*</sup></h6>
                 </label>
 
                 <div class="container">
@@ -179,8 +180,21 @@
         let ppage = document.getElementById("ppage");
         ppage.style.width = ((pieceIndex + 2)/(experiments_len + 2) * 100) + "%";
 
-        // let pieceName = document.getElementById("piece-name");
-        // pieceName.innerHTML = pieceName.innerHTML.replace("_i_", pieceIndex + 1);
+        // xp gt idx and generated piece idx 
+        let gt_idx = localStorage.getItem("gt_idx");
+
+        if(gt_idx){
+            gt_idx = parseInt(gt_idx)
+            gt_idx += 1
+        } else {
+            gt_idx = 0
+        }
+
+        let pieceName = document.getElementById("piece-name");
+        pieceName.innerHTML = pieceName.innerHTML.replace("XP", gt_idx + 1);
+
+        localStorage.setItem("gt_idx", gt_idx);
+        localStorage.setItem("gen_idx", 0);
 
         // Set answers if user has used the prevButton
         questions.forEach(question => {
