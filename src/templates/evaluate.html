@@ -44,8 +44,7 @@
             <div class="card-body mx-2">
             <small>
                 <label for="">
-                <h6 id="piece-name">Experimento XP, música <strong> GERADA </strong> N_MUSIC.</h6>
-                <h6>Ouça a música de fundo <strong> GERADA </strong> para esse video game: <sup class="required">*</sup></h6>
+                <h6>Assista ao vídeo do mesmo trecho do <strong><span id="gt_idx"></span></strong> jogo com a <strong><span id="gen_idx"></span></strong> trilha de fundo GERADA:<sup class="required">*</sup></h6>
                 </label>
 
                 <div class="container">
@@ -184,11 +183,11 @@
         let gt_idx = parseInt(localStorage.getItem("gt_idx"));
         let gen_idx = parseInt(localStorage.getItem("gen_idx"));
 
-        localStorage.setItem("gen_idx", gen_idx+1);
+        let gtIdxElem = document.getElementById("gt_idx");
+        let genIdxElem = document.getElementById("gen_idx");
 
-        let pieceName = document.getElementById("piece-name");
-        pieceName.innerHTML = pieceName.innerHTML.replace("XP", gt_idx + 1);
-        pieceName.innerHTML = pieceName.innerHTML.replace("N_MUSIC", gen_idx + 1);
+        gtIdxElem.innerHTML = ['PRIMEIRO', 'SEGUNDO', 'TERCEIRO', 'QUARTO', 'QUINTO'][gt_idx]
+        genIdxElem.innerHTML = ['PRIMEIRA', 'SEGUNDA', 'TERCEIRA', 'QUARTA', 'QUINTA'][gen_idx]
 
         // Set answers if user has used the prevButton
         questions.forEach(question => {
@@ -215,7 +214,10 @@
         else {
             prevButton.onclick = function() {
                 saveForm();
+
+                localStorage.setItem("gen_idx", gen_idx - 1);
                 localStorage.setItem("piece_index", pieceIndex - 1);
+
                 const current_experiment = experiments_dict[pieceIndex - 1]
                 const model_key = current_experiment['model_key']
                 const pick_one_key = current_experiment['pick_one_key']
@@ -301,7 +303,8 @@
             return false;
         }
 
-        let pieceIndex = parseInt(localStorage.getItem("piece_index"));
+        const gen_idx = parseInt(localStorage.getItem("gen_idx"));
+        const pieceIndex = parseInt(localStorage.getItem("piece_index"));
         const questions = JSON.parse('{{ questions | tojson }}');
 
         is_all_answered = true
@@ -322,6 +325,17 @@
         saveForm();
 
         localStorage.setItem("piece_index", pieceIndex + 1);
+
+        // #TODO: Make this in a non hardcoded way based on the number of models
+        if(gen_idx == 2){
+            const gt_idx = parseInt(localStorage.getItem("gt_idx"));
+            localStorage.setItem("gt_idx", gt_idx+1);
+        }
+
+        if(gen_idx < 2){
+            localStorage.setItem("gen_idx", gen_idx+1);
+        }
+
         return true;
     }
 

@@ -58,7 +58,7 @@
 			</div>
 
 			<p class="m-0 p-0 bold"><strong>Convite Para Participação:</strong><br>
-				O objetivo dessa pesquisa é desenvolver novos modelos de geração musical para jogos de video game. Nesse estudo, queremos avaliar a qualidade de músicas geradas por modelos de Inteligência Artificial em relação as trilhas originais de diferentes jogos.
+				O objetivo dessa pesquisa é desenvolver novos modelos de geração musical para jogos de video game. Nesse estudo, queremos avaliar a qualidade de músicas geradas por modelos de Inteligência Artificial em relação às trilhas originais de diferentes jogos.
 			</p><br>
 
 			<p class="m-0 p-0 bold"><strong>Objetivo do Estudo:</strong><br>
@@ -66,9 +66,9 @@
 			</p><br>
 
 			<p class="m-0 p-0 bold"><strong>Participação:</strong><br>
-				Nesse estudo, você irá avaliar músicas geradas para dois jogos diferentes. Ambos os jogos são do do Super Nintendo Entertainment System (SNES). 
-				Para cada jogo, você irá inicialmente assitir a um vídeo de um trecho desse jogo com a sua música de fundo original. Após o vídeo original, irá responder perguntas sobre a sua familiaridade com o jogo assitido.
-				Em seguida, irá assitir a três versões diferentes deste mesmo vídeo, cada um com uma trilha de fundo gerada diferente. Após assitir cada vídeo com música gerada, você irá responder perguntas sobre a qualidade das músicas ouvidas.
+				Nesse estudo, você irá avaliar músicas geradas para dois jogos diferentes. Ambos os jogos são do Super Nintendo Entertainment System (SNES). 
+				Para cada jogo, você irá assitir a um vídeo de um trecho desse jogo com a sua música de fundo original. Após o vídeo original, você irá responder perguntas sobre a sua familiaridade com o jogo assitido.
+				Em seguida, você irá assitir a três versões diferentes deste mesmo vídeo, cada uma com uma trilha de fundo gerada diferente. Após assitir cada vídeo com música gerada, você irá responder perguntas sobre a qualidade das músicas ouvidas.
 				Ao final, você irá responder um questionário demográfico. Cada vídeo, inclusive o com a trilha original, tem duração de 10 segundos. No total, você irá assistir a <span id="n_pieces"></span> vídeos. 
 				O experimento completo leva aproximadamente <span id="xp_duration"></span> minutos. Recomendamos o uso de fones de ouvido durante este estudo.
 			</p><br>
@@ -111,7 +111,6 @@
 	<form id="submitForm" method="GET">
         <div class="d-flex flex-row align-items-md-center justify-content-between mt-2 mb-2 gap-3">
             <div class="d-flex gap-1">
-                <button id="prevButton" type="button" class="btn btn-page bg-white ml-2" onclick="">Anterior</button>
                 <button id="nextButton" type="submit" class="btn btn-page bg-white ml-2" >Próximo</button>
             </div>
 
@@ -150,10 +149,13 @@
         // Make sure localStorage is clear when the experiments start
         localStorage.clear();
 
-        // Set Next button action
-        let submitForm = document.getElementById("submitForm");
-
+		// Init counters
+        localStorage.setItem("gt_idx", 0);
+        localStorage.setItem("gen_idx", 0);
 		localStorage.setItem("piece_index", 0);
+
+		// Set Next button action
+        let submitForm = document.getElementById("submitForm");
 
 		const first_experiment = experiments_dict[0]
 		const model_key = first_experiment['model_key']

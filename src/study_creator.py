@@ -93,7 +93,7 @@ def main():
     questions:tp.List[Question] = [
         # Inspired by GVMGen -> Equivalent to ImageBind
         LikertQuestion(
-            header="O quanto essa música de fundo, gerada automaticamente, se encaixa nessa cena de videogame?",
+            header="O quanto essa música de fundo gerada se encaixa nessa cena de videogame?",
             options=["Muito mal", "Mal", "Moderadamente", "Bem", "Muito bem"]
         ),
         # Inspired by OSSL -> Equivalent to Genre Classifier
@@ -113,7 +113,7 @@ def main():
             options=["Muito ruim", "Ruim", "Moderada", "Boa", "Muito boa"]
         ),
         LikertQuestion(
-            header="Essa música de fundo gerada soa como música de video game do SNES?",
+            header="Essa música de fundo gerada soa como música de video game do Super Nintendo (SNES)?",
             options=["Discordo totalmente", "Discordo", "Neutro", "Concordo", "Concordo totalmente"]
         )
     ]

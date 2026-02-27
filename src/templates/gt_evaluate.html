@@ -44,8 +44,8 @@
             <div class="card-body mx-2">
             <small>
                 <label for="">
-                <h6 id="piece-name">Experimento XP, música <strong> ORIGINAL.</strong></h6>
-                <h6>Ouça a música de fundo <strong> ORIGINAL </strong> deste jogo de video game: <sup class="required">*</sup></h6>
+                <h6>Vídeo do <strong><span id="gt_idx" value="-1"></span></strong> Jogo.</h6>
+                <h6>Assista ao vídeo de um trecho desse jogo com a sua trilha de fundo <strong>ORIGINAL</strong><sup class="required">*</sup></h6>
                 </label>
 
                 <div class="container">
@@ -181,20 +181,10 @@
         ppage.style.width = ((pieceIndex + 2)/(experiments_len + 2) * 100) + "%";
 
         // xp gt idx and generated piece idx 
-        let gt_idx = localStorage.getItem("gt_idx");
+        let gt_idx = parseInt(localStorage.getItem("gt_idx"));
+        let gtIdxElem = document.getElementById("gt_idx");
 
-        if(gt_idx){
-            gt_idx = parseInt(gt_idx)
-            gt_idx += 1
-        } else {
-            gt_idx = 0
-        }
-
-        let pieceName = document.getElementById("piece-name");
-        pieceName.innerHTML = pieceName.innerHTML.replace("XP", gt_idx + 1);
-
-        localStorage.setItem("gt_idx", gt_idx);
-        localStorage.setItem("gen_idx", 0);
+        gtIdxElem.innerHTML = ['PRIMEIRO', 'SEGUNDO', 'TERCEIRO', 'QUARTO', 'QUINTO'][gt_idx];
 
         // Set answers if user has used the prevButton
         questions.forEach(question => {
@@ -221,7 +211,11 @@
         else {
             prevButton.onclick = function() {
                 saveForm();
+
+                localStorage.setItem("gt_idx", gt_idx - 1);
+                localStorage.setItem("gen_idx", 2); // #TODO: Maken not hardcoded
                 localStorage.setItem("piece_index", pieceIndex - 1);
+
                 const current_experiment = experiments_dict[pieceIndex - 1]
                 const model_key = current_experiment['model_key']
                 const pick_one_key = current_experiment['pick_one_key']
@@ -326,8 +320,9 @@
         }
 
         saveForm();
-
         localStorage.setItem("piece_index", pieceIndex + 1);
+        localStorage.setItem("gen_idx", 0); // Reset gen idx
+
         return true;
     }
 
