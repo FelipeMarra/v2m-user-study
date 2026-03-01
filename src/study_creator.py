@@ -94,26 +94,26 @@ def main():
         # Inspired by GVMGen -> Equivalent to ImageBind
         LikertQuestion(
             header="O quanto essa música de fundo gerada se encaixa nessa cena de videogame?",
-            options=["Muito mal", "Mal", "Moderadamente", "Bem", "Muito bem"]
+            options=["Muito mal", "Mal", "Razoávelmente", "Bem", "Muito bem"]
         ),
         # Inspired by OSSL -> Equivalent to Genre Classifier
         LikertQuestion(
             header="O quanto essa música de fundo gerada se encaixa no gênero (PICK_ONE_KEY_NAME) deste jogo?", # In our case the pick_one key name is the game genre
-            options=["Muito mal", "Mal", "Moderadamente", "Bem", "Muito bem"],
+            options=["Muito mal", "Mal", "Razoávelmente", "Bem", "Muito bem"],
             replace="PICK_ONE_KEY_NAME"
         ),
         # Got from GVMGen -> Equivalent to FAD
         LikertQuestion(
             header="Qual a qualidade do áudio dessa música de fundo gerada?",
-            options=["Muito ruim", "Ruim", "Moderada", "Boa", "Muito boa"]
+            options=["Muito ruim", "Ruim", "Razoável", "Boa", "Muito boa"]
         ),
         # Got from GVMGen -> Equivalent to KLD
         LikertQuestion(
-            header="Qual é a qualidade da composição (ritmo, harmonia, melodia, forma, etc.) dessa música de fundo gerada?",
-            options=["Muito ruim", "Ruim", "Moderada", "Boa", "Muito boa"]
+            header="O quanto esta música soa como uma composição profissional de videogame?",
+            options=["Nada profissional<br>(confusa/aleatória)", "Pouco profissional", "Razoável", "Profissional", "Muito profissional<br>(soa como trilhas clássicas)"]
         ),
         LikertQuestion(
-            header="Essa música de fundo gerada soa como música de video game do Super Nintendo (SNES)?",
+            header="Essa música de fundo gerada soa como música de videogame do Super Nintendo (SNES)?",
             options=["Discordo totalmente", "Discordo", "Neutro", "Concordo", "Concordo totalmente"]
         )
     ]
@@ -134,7 +134,7 @@ def main():
     ]
 
     koji_gen = StudyTemplate(
-        name="Avaliando Modelos de Geração de Música para Video Games",
+        name="Avaliando Modelos de Geração de Música para Videogames",
         n_experiments=2,
         n_models=3,
         gt="Ground_Truth",
@@ -144,6 +144,13 @@ def main():
             Level("Model", LevelType.MODEL),
             Level("Inference", LevelType.FOLDER, force_folder="inference"),
             Level("Game Genre", LevelType.PICK_ONE)
+        ],
+        exclude = [
+            'kamaitachi-no-yoru_00845_gen.mp4',
+            'zenkoku-koukou-soccer-senshuken-96_00325_gen.mp4',
+            'dig-spike-volleyball_02097_gen.mp4',
+            'hat-trick-hero-2_00523_gen.mp4',
+            'populous-ii-trials-of-the-olympian-gods_01301_gen.mp4'
         ],
         questions = questions,
         gt_questions = gt_questions

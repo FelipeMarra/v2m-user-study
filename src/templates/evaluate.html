@@ -39,6 +39,16 @@
 
     <div class="p-1"></div>
 
+        <div class="card bg-white text-dark border rounded">
+        <div class="card-body mx-2">
+            <div>
+                <h6><strong><span id="gt_idx_card" value="-1"></span></strong> Jogo.</h6>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-1"></div>
+
     <form id="evaluate-form" class="needs-validation" action="" onsubmit="return validateForm()" method="GET">
         <div class="card bg-white borderrounded">
             <div class="card-body mx-2">
@@ -114,7 +124,7 @@
                     {% for op_value, op_txt in question['options'] %}
                         <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
                             <input class="form-check-input me-2" type="radio" name="question{{question['_id']}}" value="{{op_value}}" />
-                            <label class="form-check-label text-nowrap mt-1">{{op_txt}}</label>
+                            <label class="form-check-label text-nowrap mt-1">{{ op_txt |safe }}</label>
                         </div>
                     {% endfor %}
                 </div>
@@ -184,9 +194,12 @@
         let gen_idx = parseInt(localStorage.getItem("gen_idx"));
 
         let gtIdxElem = document.getElementById("gt_idx");
-        let genIdxElem = document.getElementById("gen_idx");
+        let gtIdxCardElem = document.getElementById("gt_idx_card");
 
+        gtIdxCardElem.innerHTML = ['PRIMEIRO', 'SEGUNDO', 'TERCEIRO', 'QUARTO', 'QUINTO'][gt_idx]
         gtIdxElem.innerHTML = ['PRIMEIRO', 'SEGUNDO', 'TERCEIRO', 'QUARTO', 'QUINTO'][gt_idx]
+
+        let genIdxElem = document.getElementById("gen_idx");
         genIdxElem.innerHTML = ['PRIMEIRA', 'SEGUNDA', 'TERCEIRA', 'QUARTA', 'QUINTA'][gen_idx]
 
         // Set answers if user has used the prevButton

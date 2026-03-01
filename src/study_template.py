@@ -76,6 +76,7 @@ class StudyTemplate:
             levels:tp.List[Level], 
             questions:tp.List[Question],
             gt_questions:tp.List[Question],
+            exclude:tp.List[str] = [],
             gt="Ground_Truth",
             gt_ends_with=".mp4",
             gen_ends_with="_gen.mp4", 
@@ -88,6 +89,7 @@ class StudyTemplate:
         self.n_experiments = n_experiments
         self.n_models = n_models
         self.questions = questions
+        self.exclude = [Path(e).stem for e in exclude]
         self.gt_questions = gt_questions
         self.gt = gt
         self.gt_ends_with = gt_ends_with
@@ -153,14 +155,23 @@ class StudyTemplate:
         # Only need to explore the levels of one random model
         new_dict:tp.Dict[str, tp.List[Path]] = {}
 
+        excluded = []
+
         for path_prefix in self._pick_one_dict.keys():
             base_path = self.first_non_gt.path.joinpath(path_prefix)
             new_key = base_path.stem
             new_dict[new_key] = []
 
             for file in self.walk_files_recursive(base_path, self.first_non_gt.path):
+
+                if file.stem in self.exclude:
+                    excluded.append(file.stem)
+                    continue
+
                 if file.name.endswith(self.gen_ends_with):
                     new_dict[new_key].append(file)
+
+        print(f"####### EXCLUDED #################\n{set(excluded)}\n###########################\n")
 
         self._pick_one_dict = new_dict
 
