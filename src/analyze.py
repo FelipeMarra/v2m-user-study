@@ -1,186 +1,105 @@
-import os
-import csv
-import numpy as np
-
+import pandas as pd
 from pymongo import MongoClient
 
 # Connect with database
 database_url = "localhost:27017"
-database = MongoClient(database_url)
+client = MongoClient(database_url)
+db = client["user_study_test"]
 
-experiments_col = database["user_study_test"]["experiments"]
-results_col = database["user_study_test"]["results"]
+models_col = db["models"]
+questions_col = db["questions"]
+gt_questions_col = db["gt_questions"]
+xp_meta_col = db["xp_meta"]
+results_col = db["results"]
 
-tests = {"static/test/e2_real_human_4.mp3": "test_1",
-         "static/test/e4_real_human_2.mp3": "test_2"}
+def get_gen_questions() -> dict[int, str]:
+    gen_qustions:dict[int, str] = {}
+    for question in questions_col.find({}):
+        gen_qustions[int(question['_id'])] = question['header']
 
+    return gen_qustions
 
-pieces = ('piece_1', 'piece_2', 'piece_3', 'piece_4')
+def get_model(model_id:int):
+    model = models_col.find_one({'_id': model_id})
 
-systems = {
-        'mcts' : {'v1': [], 'v0': [], 'a1': [], 'a0': [], 'h': [], 'r':[], 'o': []}, 
-        'sbbs' : {'v1': [], 'v0': [], 'a1': [], 'a0': [], 'h': [], 'r':[], 'o': []}, 
-        'human': {'v1': [], 'v0': [], 'a1': [], 'a0': [], 'h': [], 'r':[], 'o': []}, 
-        'remi' : {'v1': [], 'v0': [], 'a1': [], 'a0': [], 'h': [], 'r':[], 'o': []}, 
-}
+    return model
 
-profile = {
-        'ethnicity': [],
-        'language' : [],
-        'age'      : [],
-        'gender'   : [],
-        'xp'       : [],
-        'comments' : []
-}
-
-def is_valid_experiment(experiment, results):
-    test_id = tests[experiment['piece_t']]
-
-    test_q1 = int(results['{}_{}'.format(test_id, 'q1')]) 
-    test_q2 = int(results['{}_{}'.format(test_id, 'q2')]) 
-    test_q3 = int(results['{}_{}'.format(test_id, 'q3')]) 
-    test_q4 = int(results['{}_{}'.format(test_id, 'q4')]) 
-    test_q5 = int(results['{}_{}'.format(test_id, 'q5')]) 
-    
-    piecet_q1 = int(results['piece_t_{}'.format('q1')]) 
-    piecet_q2 = int(results['piece_t_{}'.format('q2')]) 
-    piecet_q3 = int(results['piece_t_{}'.format('q3')]) 
-    piecet_q4 = int(results['piece_t_{}'.format('q4')]) 
-    piecet_q5 = int(results['piece_t_{}'.format('q5')]) 
-
-    q1_hit = False 
-    if (test_q1 > 3 and piecet_q1 > 3) or (test_q1 < 3 and  piecet_q1 < 3):
-        q1_hit = True
-
-    q2_hit = False 
-    if (test_q2 > 3 and piecet_q2 > 3) or (test_q2 < 3 and  piecet_q2 < 3):
-        q2_hit = True
-
-    q3_hit = False 
-    if (test_q3 > 3 and piecet_q3 > 3) or (test_q3 < 3 and  piecet_q3 < 3):
-        q3_hit = True
-
-    explanations = []
-    for p in pieces:
-        expl = results['{}_expl'.format(p)]
-        explanations.append(expl)
-
-    explanations_validation = len(set(explanations)) == len(pieces)
-    return (q1_hit and q2_hit and q3_hit) and explanations_validation
-
-if __name__ == "__main__":
+def get_answers_per_model() -> dict[str, dict[int, list[int]]]:
     results = results_col.find({})
-    experiments = experiments_col.find({})
 
-    total_valid = 0
-    total_experiments = 0
+    id_and_profile = ['_id', 'year', 'xp', 'gender', 'comments', 'play_freq', 'snes_familiarity']
+    non_question = ['model_key', 'pick_one_key', 'content_key']
 
-    for e in experiments:
-        experiment_results = results_col.find({'experiment_id': e['_id']})
-        experiment_results_count = results_col.count_documents({'experiment_id': e['_id']})
-        
-        valid_results = 0
-        for r in experiment_results:
-            try:
-                if not is_valid_experiment(e, r):
-                    continue
-            except:
+    # {
+    #     model_name: {
+    #         question_idx: [question_value_1, question_value_2...]
+    #     }
+    # }
+    models_dict:dict[str, dict[int, list[int]]] = {} 
+
+    for result in results:
+        # for each result we have 2 experiments -> 2x(1 gt question, 3 gen questions)
+        for key, model_result in result.items():
+            if key in id_and_profile:
                 continue
 
-            # Get profile data
-            profile['ethnicity'].append(r['ethnicity'])
-            profile['language'].append(r['language'])
-            profile['age'].append(2022 - int(r['year']))
-            profile['xp'].append(int(r['xp']))
-            profile['comments'].append(r['comments'])
+            model_result_idx = int(key.split('_')[0])
+            model_result_xp_idx = model_result_idx % 4 # idx relative to the current experiments 
 
-            for p in pieces:
-                piece_emotion = os.path.basename(e[p]).split('.')[0].split('_')[0]
-                piece_system = os.path.basename(e[p]).split('.')[0].split('_')[2]
-                
-                try:
-                    q1 = int(r['{}_q1'.format(p)])
-                    q2 = int(r['{}_q2'.format(p)])
+            # skip gt question for now
+            if model_result_xp_idx == 0:
+                continue
 
-                    # high valence
-                    if piece_emotion  == 'e1' or piece_emotion == 'e4':
-                        systems[piece_system]['v1'].append(q1)
+            model = get_model(model_result['model_key'])
+            model_name = model['name'] # type: ignore
+            print(f"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+            print(f"q_idx: {model_result_idx} | model_result: {model_result} | model: {model_name}\n")
 
-                    # low valence
-                    if piece_emotion == 'e2' or piece_emotion  == 'e3':
-                        systems[piece_system]['v0'].append(q1)
+            for quest_key, quest in model_result.items():
+                if quest_key in non_question:
+                    continue
 
-                    # high arousal
-                    if piece_emotion == 'e1' or piece_emotion == 'e2':
-                        systems[piece_system]['a1'].append(q2)
+                quest_idx = int(quest_key.split('_q')[-1])
+                quest_value = int(quest) +1
 
-                    # low arousal
-                    if piece_emotion  == 'e3' or piece_emotion == 'e4':
-                        systems[piece_system]['a0'].append(q2)
+                print(f"quest_idx {quest_idx} | quest {quest_idx} | quest_value {quest_value}")
 
-                    q3 = int(r['{}_q3'.format(p)])
-                    q4 = int(r['{}_q4'.format(p)])
-                    q5 = int(r['{}_q5'.format(p)])
-                    
-                    systems[piece_system]['h'].append(q3)
-                    systems[piece_system]['r'].append(q4)
-                    systems[piece_system]['o'].append(q5)
-                    
-                except:
-                    print('Invalid experiment')
+                if not models_dict.get(model_name):
+                    models_dict[model_name] = {}
 
-            valid_results += 1
+                if models_dict[model_name].get(quest_idx):
+                    models_dict[model_name][quest_idx].append(quest_value)
+                else:
+                    models_dict[model_name][quest_idx] = [quest_value]
 
-        print('> Experiment {}: {}/{}'.format(e['_id'], valid_results, experiment_results_count))
-    
-        total_valid += valid_results
-        total_experiments += experiment_results_count
+    return models_dict
 
-    print("Experimentns (valid,total):", total_valid, total_experiments)
+def get_answers_means(models_dict:dict[str, dict[int, list[int]]]) -> dict[str, dict[int, float]]:
+    mean_models_dict:dict[str, dict[int, float]] = {}
 
-def save_field(systems, field, filename):
-    max_len = max(len(systems['mcts'][field]), 
-                  len(systems['human'][field]), 
-                  len(systems['sbbs'][field]), 
-                  len(systems['remi'][field]))
-    
-    header = ['human', 'mcts', 'sbbs', 'remi']
-    with open(filename, 'w', encoding='UTF8') as f:
-        writer = csv.writer(f)
-    
-        # write the header
-        writer.writerow(header)
-    
-        row = []
-        for i in range(max_len):
-            mcts_i = None
-            if i < len(systems['mcts'][field]):
-                mcts_i = systems['mcts'][field][i]
-            
-            human_i = None
-            if i < len(systems['human'][field]):
-                human_i = systems['human'][field][i]
-    
-            sbbs_i = None
-            if i < len(systems['sbbs'][field]):
-                sbbs_i = systems['sbbs'][field][i]
-    
-            remi_i = None
-            if i < len(systems['remi'][field]):
-                remi_i = systems['remi'][field][i]
-    
-            row = [human_i, mcts_i, sbbs_i, remi_i] 
-    
-            writer.writerow(row)
+    for model_name, question_dict in models_dict.items():
+        for quest_idx, values in question_dict.items():
+            values_mean = sum(values)/len(values)
 
-save_field(systems, 'v1', 'high_valence.csv')
-save_field(systems, 'v0', 'low_valence.csv')
-save_field(systems, 'a1', 'high_arousal.csv')
-save_field(systems, 'a0', 'low_arousal.csv')
-save_field(systems, 'h', 'humaness.csv')
-save_field(systems, 'r', 'richness.csv')
-save_field(systems, 'o', 'overall_quality.csv')
+            if not mean_models_dict.get(model_name):
+                mean_models_dict[model_name] = {}
 
-print('Profile:')
-print('> Average Age:', np.mean(profile['age']), np.std(profile['age']))
-print('> Average Music Experience:', np.mean(profile['xp']), np.std(profile['xp']))
+            mean_models_dict[model_name][quest_idx] = values_mean
+
+    return mean_models_dict
+
+def main():
+    gen_qustions = get_gen_questions()
+    print(f"gen_qustions:\n{gen_qustions}\n")
+
+    models_dict = get_answers_per_model()
+    print(f'models_dict: {models_dict}\n')
+
+    mean_models_dict = get_answers_means(models_dict)
+    print(f'mean_models_dict: {mean_models_dict}\n')
+
+    mean_models_df = pd.DataFrame(mean_models_dict)
+    print(f'mean_models_df:\n{mean_models_df}\n')
+
+if __name__ == "__main__":
+    main()
