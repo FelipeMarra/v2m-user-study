@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+
 from pymongo import MongoClient
 
 # Connect with database
@@ -74,17 +76,19 @@ def get_answers_per_model() -> dict[str, dict[int, list[int]]]:
 
     return models_dict
 
-def get_answers_means(models_dict:dict[str, dict[int, list[int]]]) -> dict[str, dict[int, float]]:
-    mean_models_dict:dict[str, dict[int, float]] = {}
+def get_answers_means(models_dict:dict[str, dict[int, list[int]]]) -> dict[str, dict[int, str]]:
+    mean_models_dict:dict[str, dict[int, str]] = {}
 
     for model_name, question_dict in models_dict.items():
         for quest_idx, values in question_dict.items():
-            values_mean = sum(values)/len(values)
+            values_array = np.array(values)
+            values_mean = round(values_array.mean(), 3)
+            values_std = round(values_array.std(), 3)
 
             if not mean_models_dict.get(model_name):
                 mean_models_dict[model_name] = {}
 
-            mean_models_dict[model_name][quest_idx] = values_mean
+            mean_models_dict[model_name][quest_idx] = f"{values_mean}+-{values_std}"
 
     return mean_models_dict
 
