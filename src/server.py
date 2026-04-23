@@ -28,6 +28,11 @@ gt_questions_col = db["gt_questions"]
 xp_meta_col = db["xp_meta"] # metadata like template's n_models and n_experiments
 results_col = db["results"]
 
+# en database
+questions_col_en = db["questions_en"]
+gt_questions_col_en = db["gt_questions_en"]
+xp_meta_col_en = db["xp_meta_en"] # metadata like template's n_models and n_experiments
+
 app = Flask(__name__)
 
 VERBOSE = True
@@ -132,7 +137,7 @@ def get_contents() -> tp.Tuple[tp.List[tp.Tuple[int, int]], int]:
 
     return chosen_contents, n_experiments
 
-def get_experiment(models_keys:tp.List[int], gt_key:int, contets_keys:tp.List[tp.Tuple[int, int]], n_experiments:int):
+def get_experiment(models_keys:tp.List[int], gt_key:int, contets_keys:tp.List[tp.Tuple[int, int]], n_experiments:int, lang:str='pt'):
     global TITLE
     experiments_dict = {}
     counter = 0
@@ -164,7 +169,11 @@ def get_experiment(models_keys:tp.List[int], gt_key:int, contets_keys:tp.List[tp
             counter += 1
 
     # Set title
-    template_name:str = xp_meta_col.find_one({'_id': 0})['name'] # type: ignore
+    if lang == 'pt':
+        template_name:str = xp_meta_col.find_one({'_id': 0})['name'] # type: ignore
+    else:
+        template_name:str = xp_meta_col_en.find_one({'_id': 0})['name'] # type: ignore
+
     TITLE = template_name
 
     return experiments_dict
@@ -190,6 +199,23 @@ def index():
         sever_name=sever_name
     )
 
+@app.route('/en')
+def index_en():
+    # Get least visited models combination id
+    models_keys, gt_key = get_models()
+
+    # Get least visited pick_one contents
+    contets_keys, n_experiments = get_contents()
+
+    experiments_dict = get_experiment(models_keys, gt_key, contets_keys, n_experiments, lang='en')
+
+    return render_template(
+        'index_en.html', 
+        title = TITLE,
+        experiments_dict=experiments_dict,
+        sever_name=sever_name
+    )
+
 translation_dict:dict[str, str] = {
     "Action": "Ação", 
     "Adventure": "Aventura",
@@ -204,8 +230,12 @@ translation_dict:dict[str, str] = {
     "Strategy": "Estratégia"
 }
 
-def get_questions(is_gt:bool, replace_dict:dict[str, str]={}):
-    db_col = gt_questions_col if is_gt else questions_col
+def get_questions(is_gt:bool, replace_dict:dict[str, str]={}, lang:str="pt"):
+    if lang == "pt":
+        db_col = gt_questions_col if is_gt else questions_col
+    else:
+        db_col = gt_questions_col_en if is_gt else questions_col_en
+
     questions = []
 
     for question in db_col.find({}):
@@ -214,7 +244,10 @@ def get_questions(is_gt:bool, replace_dict:dict[str, str]={}):
         replace_match = replace_dict.get(question['replace'])
 
         if replace_match:
-            header = header.replace(question['replace'], translation_dict[replace_match])
+            if lang == "pt":
+                header = header.replace(question['replace'], translation_dict[replace_match])
+            else:
+                header = header.replace(question['replace'], replace_match)
 
         questions.append({
             '_id': question['_id'],
@@ -257,6 +290,37 @@ def evaluate(model_key:str, pick_one_key:str, content_key:str):
         sever_name=sever_name
     )
 
+@app.route('/en/evaluate/<model_key>/<pick_one_key>/<content_key>')
+def evaluate_en(model_key:str, pick_one_key:str, content_key:str):
+    model:tp.Dict[str, tp.Any] = models_col.find_one({"_id": int(model_key)}) # type: ignore
+    pick_one_key_name:str = pick_one_col.find_one({"_id": int(pick_one_key)})['name'] # type: ignore
+    content_path:str = pick_one_col.find_one({"_id": int(pick_one_key)})['contents'][int(content_key)] # type: ignore
+    gen_ends_with:str = xp_meta_col.find_one({'_id': 0})['gen_ends_with'] # type: ignore
+
+    if VERBOSE: print(f"\n EVAL ROUT: \n\tmodel_key: {model_key}\n\tGT_KEY: {GT_KEY}\n\tgen_ends_with {gen_ends_with}\n\tGT_ENDS_WITH: {GT_ENDS_WITH}")
+
+    is_gt = False
+    if model_key == str(GT_KEY):
+        content_path = content_path.replace(gen_ends_with, GT_ENDS_WITH)
+        is_gt = True
+
+    piece = os.path.join(model['path'], content_path)
+
+    # Get questions
+    replace_dict = {'PICK_ONE_KEY_NAME': pick_one_key_name}
+    questions = get_questions(is_gt, replace_dict, lang="en")
+
+    if VERBOSE: print(f"EVAL ROUT QUESNTIONS: {questions}\n")
+
+    template = 'gt_evaluate_en.html' if is_gt else 'evaluate_en.html'
+    return render_template(
+        template,
+        title = TITLE,
+        piece=piece,
+        questions=questions,
+        sever_name=sever_name
+    )
+
 @app.route('/profile')
 def profile():
     questions = get_questions(False)
@@ -264,6 +328,20 @@ def profile():
 
     return render_template(
         'profile.html',
+        title = TITLE,
+        gt_key = GT_KEY,
+        questions=questions,
+        gt_questions=gt_questions,
+        sever_name=sever_name
+    )
+
+@app.route('/en/profile')
+def profile_en():
+    questions = get_questions(False, lang="en")
+    gt_questions = get_questions(True, lang="en")
+
+    return render_template(
+        'profile_en.html',
         title = TITLE,
         gt_key = GT_KEY,
         questions=questions,
@@ -365,6 +443,70 @@ def end():
             )
     else:
         return render_template('end.html', sever_name=sever_name)
+
+@app.route('/en/end', methods = ['GET', 'POST']) # type: ignore
+def end_en():
+    if request.method == 'POST':
+        result = {}
+        experiments_dict:str = request.form.get('experiments_dict') # type: ignore
+        print(f"END ROUT POST experiments_dict as str:\n{experiments_dict}\n")
+        if experiments_dict:
+            experiments_dict:dict = json.loads(experiments_dict) # type: ignore
+
+            models_keys = []
+            contets_keys = []
+            questions = get_questions(False)
+            gt_questions = get_questions(True)
+
+            for key, value in experiments_dict.items():
+                model_key = int(value['model_key'])
+                models_keys.append(model_key)
+
+                pick_one_key = int(value['pick_one_key'])
+                content_key = int(value['content_key'])
+                contets_keys.append((pick_one_key, content_key))
+
+                content_answer = {
+                    'model_key': model_key,
+                    'pick_one_key': pick_one_key,
+                    'content_key': content_key
+                }
+
+                my_questions = gt_questions if value['is_gt'] else questions
+                for question in my_questions:
+                    question_id = question['_id']
+                    question_key = f'{key}_q{question_id}'
+
+                    content_answer[question_key]:str = request.form.get(question_key) # type: ignore
+
+                xp_idx = value['xp_idx']
+                result[f'{key}_xp_{xp_idx}'] = content_answer
+                print(f"SAVING RESULT result[{key}_xp_{xp_idx}]: {result[f'{key}_xp_{xp_idx}']}")
+
+            models_keys = list(set(models_keys))
+            contets_keys = list(set(contets_keys))
+            increment_visits(models_keys, contets_keys)
+
+            #result["ethnicity"] = request.form.get("ethnicity")
+            #result["language"] = request.form.get("language")
+            result["year"] = request.form.get("year")
+            result["xp"] = request.form.get("xp")
+            result["gender"] = request.form.get("gender")
+            result["comments"] = request.form.get("comments")
+            result["play_freq"] = request.form.get("play_freq")
+            result["snes_familiarity"] = request.form.get("snes_familiarity")
+
+            insert_result = results_col.insert_one(result)
+            evaluation_id = str(insert_result.inserted_id)
+
+            return render_template(
+                'end_en.html',
+                title = TITLE,
+                evaluation_id = evaluation_id,
+                sever_name = sever_name
+            )
+    else:
+        return render_template('end_en.html', sever_name=sever_name)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")

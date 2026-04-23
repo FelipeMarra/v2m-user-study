@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
+
+    <!-- Local CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+
+    <title>{{ title }}</title>
+</head>
+
+<body onload="main()">
+    <div class="p-1"></div>
+
+    <div class="card bg-white text-dark border rounded">
+        <div class="card-header border-0 bg-primary"></div>
+
+        <div class="card-body mx-2">
+        <div id="header">
+			<img src="https://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" width="50%" style="min-width: 200px;" alt="Logo">
+            <h2 class="font-weight-normal">{{ title }}</h2>
+        </div>
+        <sup class="required">* Required</sup>
+        </div>
+    </div>
+
+    <div class="p-1"></div>
+
+    <div class="card bg-white border rounded">
+        <div class="card-body mx-2">
+        <small>
+            <!-- #TOD: Mostrar videos dos jogos novamente e perguntar se a pessoa conhece os jogos -->
+            <h6 id="piece-intro">Demographic Questionnaire</h6>
+            Please answer the questions below with your demographic data.
+        </small>
+        </div>
+    </div>
+
+    <div class="p-1"></div>
+
+    <form id="profile-form" class="needs-validation" action="https://{{ sever_name }}/en/end" method="POST">
+        <input type="hidden" name="experiments_dict" id="experiments_dict">
+        <!-- <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+            <small>
+                <label for="ethnicity"><h6>Ethnicity: <sup class="required">*</sup></h6></label>
+                <select class="form-control dropdown" id="ethnicity" name="ethnicity" required>
+                    <option value="" selected="selected" disabled="disabled">Choose...</option>
+                    <option value="Asian">Asian</option>
+                    <option value="Indian">American Indian or Alaska Native</option>
+                    <option value="Black">Black or African American</option>
+                    <option value="Latino">Latino</option>
+                    <option value="Hawaiian">Native Hawaiian or Other Pacific Islander</option>
+                    <option value="White">White</option>
+                    <option value="Other">Other</option>
+                    </select>
+                <div class="col-2"></div>
+            </small>
+
+            </div>
+        </div> -->
+
+    <!-- <div class="p-1"></div> -->
+
+        <!-- <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+            <small>
+                <label for="language"><h6>First Language: <sup class="required">*</sup></h6></label>
+                <select class="form-control dropdown" id="language" name="language" required>
+                    <option value="" selected="selected" disabled="disabled">Choose...</option>
+                    <option value="AF">Afrikaans</option>
+                    <option value="SQ">Albanian</option>
+                    <option value="AR">Arabic</option>
+                    <option value="HY">Armenian</option>
+                    <option value="EU">Basque</option>
+                    <option value="BN">Bengali</option>
+                    <option value="BG">Bulgarian</option>
+                    <option value="CA">Catalan</option>
+                    <option value="KM">Cambodian</option>
+                    <option value="ZH">Chinese (Mandarin)</option>
+                    <option value="HR">Croatian</option>
+                    <option value="CS">Czech</option>
+                    <option value="DA">Danish</option>
+                    <option value="NL">Dutch</option>
+                    <option value="EN">English</option>
+                    <option value="ET">Estonian</option>
+                    <option value="FJ">Fiji</option>
+                    <option value="FI">Finnish</option>
+                    <option value="FR">French</option>
+                    <option value="KA">Georgian</option>
+                    <option value="DE">German</option>
+                    <option value="EL">Greek</option>
+                    <option value="GU">Gujarati</option>
+                    <option value="HE">Hebrew</option>
+                    <option value="HI">Hindi</option>
+                    <option value="HU">Hungarian</option>
+                    <option value="IS">Icelandic</option>
+                    <option value="ID">Indonesian</option>
+                    <option value="GA">Irish</option>
+                    <option value="IT">Italian</option>
+                    <option value="JA">Japanese</option>
+                    <option value="JW">Javanese</option>
+                    <option value="KO">Korean</option>
+                    <option value="LA">Latin</option>
+                    <option value="LV">Latvian</option>
+                    <option value="LT">Lithuanian</option>
+                    <option value="MK">Macedonian</option>
+                    <option value="MS">Malay</option>
+                    <option value="ML">Malayalam</option>
+                    <option value="MT">Maltese</option>
+                    <option value="MI">Maori</option>
+                    <option value="MR">Marathi</option>
+                    <option value="MN">Mongolian</option>
+                    <option value="NE">Nepali</option>
+                    <option value="NO">Norwegian</option>
+                    <option value="FA">Persian</option>
+                    <option value="PL">Polish</option>
+                    <option value="PT">Portuguese</option>
+                    <option value="PA">Punjabi</option>
+                    <option value="QU">Quechua</option>
+                    <option value="RO">Romanian</option>
+                    <option value="RU">Russian</option>
+                    <option value="SM">Samoan</option>
+                    <option value="SR">Serbian</option>
+                    <option value="SK">Slovak</option>
+                    <option value="SL">Slovenian</option>
+                    <option value="ES">Spanish</option>
+                    <option value="SW">Swahili</option>
+                    <option value="SV">Swedish </option>
+                    <option value="TA">Tamil</option>
+                    <option value="TT">Tatar</option>
+                    <option value="TE">Telugu</option>
+                    <option value="TH">Thai</option>
+                    <option value="BO">Tibetan</option>
+                    <option value="TO">Tonga</option>
+                    <option value="TR">Turkish</option>
+                    <option value="UK">Ukrainian</option>
+                    <option value="UR">Urdu</option>
+                    <option value="UZ">Uzbek</option>
+                    <option value="VI">Vietnamese</option>
+                    <option value="CY">Welsh</option>
+                    <option value="XH">Xhosa</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div class="col-2"></div>
+            </small>
+            </div>
+        </div> -->
+
+        <div class="p-1"></div>
+
+        <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+            <small>
+                <label for="year"><h6>Birth Year: <sup class="required">*</sup></h6></label>
+                <!-- #TODO start_year = current_year-18 | end year = start_year-100 -->
+                <select class="form-control dropdown" id="year" name="year" required>
+                    <option value="" selected="selected" disabled="disabled">Choose...</option>
+                    <option value="2008">2008</option>
+                    <option value="2007">2007</option>
+                    <option value="2006">2006</option>
+                    <option value="2005">2005</option>
+                    <option value="2004">2004</option>
+                    <option value="2003">2003</option>
+                    <option value="2002">2002</option>
+                    <option value="2001">2001</option>
+                    <option value="2000">2000</option>
+                    <option value="1999">1999</option>
+                    <option value="1998">1998</option>
+                    <option value="1997">1997</option>
+                    <option value="1996">1996</option>
+                    <option value="1995">1995</option>
+                    <option value="1994">1994</option>
+                    <option value="1993">1993</option>
+                    <option value="1992">1992</option>
+                    <option value="1991">1991</option>
+                    <option value="1990">1990</option>
+                    <option value="1989">1989</option>
+                    <option value="1988">1988</option>
+                    <option value="1987">1987</option>
+                    <option value="1986">1986</option>
+                    <option value="1985">1985</option>
+                    <option value="1984">1984</option>
+                    <option value="1983">1983</option>
+                    <option value="1982">1982</option>
+                    <option value="1981">1981</option>
+                    <option value="1980">1980</option>
+                    <option value="1979">1979</option>
+                    <option value="1978">1978</option>
+                    <option value="1977">1977</option>
+                    <option value="1976">1976</option>
+                    <option value="1975">1975</option>
+                    <option value="1974">1974</option>
+                    <option value="1973">1973</option>
+                    <option value="1972">1972</option>
+                    <option value="1971">1971</option>
+                    <option value="1970">1970</option>
+                    <option value="1969">1969</option>
+                    <option value="1968">1968</option>
+                    <option value="1967">1967</option>
+                    <option value="1966">1966</option>
+                    <option value="1965">1965</option>
+                    <option value="1964">1964</option>
+                    <option value="1963">1963</option>
+                    <option value="1962">1962</option>
+                    <option value="1961">1961</option>
+                    <option value="1960">1960</option>
+                    <option value="1959">1959</option>
+                    <option value="1958">1958</option>
+                    <option value="1957">1957</option>
+                    <option value="1956">1956</option>
+                    <option value="1955">1955</option>
+                    <option value="1954">1954</option>
+                    <option value="1953">1953</option>
+                    <option value="1952">1952</option>
+                    <option value="1951">1951</option>
+                    <option value="1950">1950</option>
+                    <option value="1949">1949</option>
+                    <option value="1948">1948</option>
+                    <option value="1947">1947</option>
+                    <option value="1946">1946</option>
+                    <option value="1945">1945</option>
+                </select>
+
+                <div class="col-2"></div>
+            </small>
+            </div>
+        </div>
+
+        <div class="p-1"></div>
+
+        <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+            <small>
+                <label for="gender"><h6>Gender: <sup class="required">*</sup></h6></label>
+                <select class="form-control dropdown" id="gender" name="gender" required>
+                    <option value="" selected="selected" disabled="disabled">Choose...</option>
+                    <option value="Female">I identify as a woman.</option>
+                    <option value="Male">I identify as a man.</option>
+                    <option value="NonBinary">I identify as non-binary.</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <div class="col-2"></div>
+            </small>
+            </div>
+        </div>
+
+        <div class="p-1"></div>
+
+        <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+                <label for="xp"><h6>What is your level of musical proficiency?<sup class="required">*</sup></h6></label>
+                <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-2 likert" >
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp" value="0" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio0">None</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp" value="1" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio1">Basic</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp" value="2" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio2">Intermediate</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp" value="3" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio3">Advanced</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="xp"  value="4" required>
+                        <label class="form-check-label text-nowrap mt-1" for="xpInlineRadio4">Professional</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-1"></div>
+
+        <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+                <label for="play_freq"><h6>How frequently do you play video games?<sup class="required">*</sup></h6></label>
+                <div class="d-flex flex-wrap flex-md-nowrap gap-3 mt-2 likert" >
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="play_freq" value="0" required>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio0">Never played</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="play_freq" value="1" required>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio1">I rarely play</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="play_freq" value="2" required>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio1">I play frequently</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="play_freq" value="3" required>
+                        <label class="form-check-label text-nowrap mt-1" for="playFreqInlineRadio2">I play very frequently</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-1"></div>
+
+        <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+                <label for="snes_familiarity"><h6>How familiar are you with Super Nintendo (SNES) games?<sup class="required">*</sup></h6></label>
+                <div class="d-flex flex-wrap gap-3 mt-2 likert" >
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="0" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio0">I don't know what SNES is</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="1" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio1">I know about it but never played</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="2" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio2">I've played a few times</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="3" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio3">I've played many times</label>
+                    </div>
+                    <div class="likert-option form-check d-inline-flex align-items-center ml-2 w-auto">
+                        <input class="form-check-input me-2" type="radio" name="snes_familiarity" value="4" required>
+                        <label class="form-check-label text-nowrap mt-1" for="snesFamiliarityInlineRadio4">It's my favorite video game console</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-1"></div>
+
+        <div class="card bg-white border rounded">
+            <div class="card-body mx-2">
+            <small>
+                <label for="comments"><h6>Please let us know if you have any other comments about our experiment.</h6></label>
+                <input type="text" class="form-control" placeholder="Your Answer..." name="comments" id="comments">
+
+                <div class="col-2"></div>
+            </small>
+            </div>
+        </div>
+
+        <div class="p-1"></div>
+
+        <div class="d-flex flex-row align-items-md-center justify-content-between mt-2 mb-2 gap-3">
+            <div class="d-flex gap-1">
+                <button id="prevButton" type="button" class="btn btn-page bg-white ml-2" onclick="">Previous</button>
+                <button id="nextButton" type="submit" class="btn btn-page bg-white ml-2" >Submit</button>
+            </div>
+
+            <div class="d-flex align-items-center gap-1 w-50 w-md-auto m-2">
+                <div id="ppage-back" class="progress bg-secondary flex-grow-1 ml-2" style="height: 10px; min-width: 50px;">
+                    <div id="ppage" class="progress-bar" role="progressbar"></div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-1 ml-2">
+                <span id="npage" class="align-items-center">
+                    Page I of N
+                </span>
+            </div>
+        </div>
+    </form>
+
+    <div class="p-4"></div>
+</body>
+
+<script>
+    function main() {
+        // Check if study has already been taken
+        let evaluationId = localStorage.getItem("evaluation_id");
+
+        if (evaluationId) {
+            window.location.href = "https://{{ sever_name }}/en/end";
+            return;
+        }
+
+        // Retrieve experiments_dict data
+        const experiments_dict = JSON.parse(localStorage.getItem("experiments_dict"));
+        const experiments_len = Object.keys(experiments_dict).length 
+
+        // Compute paging
+        let npage = document.getElementById("npage");
+        npage.innerHTML = npage.innerHTML.replace("I", experiments_len + 2);
+        npage.innerHTML = npage.innerHTML.replace("N", experiments_len + 2);
+
+        let ppage = document.getElementById("ppage");
+        ppage.style.width = "100%";
+
+        // Retrieve current piece index
+        let pieceIndex = parseInt(localStorage.getItem("piece_index"));
+
+        // Define Back button action
+        let prevButton = document.getElementById('prevButton');
+
+        prevButton.onclick = function() {
+            const gt_idx = parseInt(localStorage.getItem("gt_idx"));
+
+            localStorage.setItem("gt_idx", gt_idx-1);
+            localStorage.setItem("piece_index", pieceIndex - 1);
+
+            const current_experiment = experiments_dict[pieceIndex - 1]
+            const model_key = current_experiment['model_key']
+            const pick_one_key = current_experiment['pick_one_key']
+            const content_key = current_experiment['content_key']
+
+            window.location.href = 'https://{{ sever_name }}/en/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
+        }
+
+        console.log(JSON.stringify(experiments_dict))
+        document.getElementById('experiments_dict').value = JSON.stringify(experiments_dict);
+
+        // Add all the answers to the form
+        const questions = JSON.parse('{{ questions | tojson }}');
+        const gt_questions = JSON.parse('{{ gt_questions | tojson }}');
+
+        for (let piece = 0; piece < experiments_len; piece++) {
+            const current_xp = experiments_dict[piece]
+
+            if(current_xp['is_gt']){
+                gt_questions.forEach(question => {
+                    const question_id = question._id
+                    const questionAnswer = localStorage.getItem(piece + "_q" + question_id);
+    
+                    console.log(`For ORIGINAL piece ${piece}, question ${question_id}, answer ${questionAnswer}`)
+    
+                    $('#profile-form').append('<input type="hidden" name="' + piece + "_q" + question_id + '" value="' + questionAnswer + '" />');
+                });
+            } else{
+                questions.forEach(question => {
+                    const question_id = question._id
+                    const questionAnswer = localStorage.getItem(piece + "_q" + question_id);
+    
+                    console.log(`For GENERATED piece ${piece}, question ${question_id}, answer ${questionAnswer}`)
+    
+                    $('#profile-form').append('<input type="hidden" name="' + piece + "_q" + question_id + '" value="' + questionAnswer + '" />');
+                });
+            }
+        }
+    }
+</script>
+</html>
