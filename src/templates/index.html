@@ -162,7 +162,7 @@
 		const pick_one_key = first_experiment['pick_one_key']
 		const content_key = first_experiment['content_key']
 
-		submitForm.action = 'http://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
+		submitForm.action = 'https://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
 
         // Save experiments_dict
         console.log("SAVING XP", experiments_dict) //#TODO: Remove

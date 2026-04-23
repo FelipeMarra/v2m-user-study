@@ -30,7 +30,7 @@
 
         <div class="card-body mx-2">
             <div id="header">
-			    <img src="http://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" width="50%" style="min-width: 200px;" alt="Logo">
+			    <img src="https://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" width="50%" style="min-width: 200px;" alt="Logo">
                 <h2 class="font-weight-normal">{{ title }}</h2>
                 <sup class="required">* Obrigatório</sup>
             </div>
@@ -61,7 +61,7 @@
                     <div class="col justify-content-center">
                         <div class="embed-responsive embed-responsive-16by9">
                             <video id="pieceVideo" preload="true" class="embed-responsive-item">
-                                <source src="http://{{ sever_name }}/{{ piece }}" type="video/mp4">
+                                <source src="https://{{ sever_name }}/{{ piece }}" type="video/mp4">
                                 Your browser does not support the video element.
                             </video>
                         </div>
@@ -72,7 +72,7 @@
                                     <div class="col-1"></div>
                                     <div class="col-2 d-flex justify-content-center">
                                         <div id="pButton" style="cursor: pointer; width: 100%; max-width: 40px;">
-                                            <img id="pButtonImg" class="img-fluid" src="http://{{ sever_name }}/static/imgs/play-64x64.png"/>
+                                            <img id="pButtonImg" class="img-fluid" src="https://{{ sever_name }}/static/imgs/play-64x64.png"/>
                                         </div>
                                     </div>
                                     <div class="col-8">
@@ -167,7 +167,7 @@
         console.log("evaluationId:", evaluationId);
 
         if (evaluationId) {
-            window.location.href = "http://{{ sever_name }}/end";
+            window.location.href = "https://{{ sever_name }}/end";
             return;
         }
 
@@ -214,7 +214,7 @@
         if (pieceIndex == 0) {
             prevButton.onclick = function() {
                 saveForm();
-                window.location.href = 'http://{{ sever_name }}'
+                window.location.href = 'https://{{ sever_name }}'
             }
         }
         else {
@@ -230,7 +230,7 @@
                 const pick_one_key = current_experiment['pick_one_key']
                 const content_key = current_experiment['content_key']
 
-                window.location.href = 'http://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
+                window.location.href = 'https://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
             }
         }
 
@@ -243,10 +243,10 @@
             const pick_one_key = current_experiment['pick_one_key']
             const content_key = current_experiment['content_key']
 
-            evaluateForm.action = 'http://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
+            evaluateForm.action = 'https://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
         }
         else {
-            evaluateForm.action = 'http://{{ sever_name }}/profile'
+            evaluateForm.action = 'https://{{ sever_name }}/profile'
         }
 
         // Video Player
@@ -256,7 +256,7 @@
             pieceEnded = true;
             document.getElementById("question0").hidden = false;
 
-            pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png";
+            pButtonImg.src = "https://{{ sever_name }}/static/imgs/play-64x64.png";
             playhead.style.backgroundColor = "black";
         };
 
@@ -341,12 +341,12 @@
         if (music.paused) {
             music.play();
             // remove play, add pause
-            pButtonImg.src = "http://{{ sever_name }}/static/imgs/pause-64x64.png";
+            pButtonImg.src = "https://{{ sever_name }}/static/imgs/pause-64x64.png";
         } else { 
             // pause music
             music.pause();
             // remove pause, add play
-            pButtonImg.src = "http://{{ sever_name }}/static/imgs/play-64x64.png"
+            pButtonImg.src = "https://{{ sever_name }}/static/imgs/play-64x64.png"
         }
     }
 

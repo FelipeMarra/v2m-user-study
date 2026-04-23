@@ -29,7 +29,7 @@
 
         <div class="card-body mx-2">
         <div id="header">
-			<img src="http://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" width="50%" style="min-width: 200px;" alt="Logo">
+			<img src="https://{{ sever_name }}/static/imgs/logo.png" class="img-fluid" width="50%" style="min-width: 200px;" alt="Logo">
             <h2 class="font-weight-normal">{{ title }}</h2>
         </div>
         <sup class="required">* Obrigatório</sup>
@@ -50,7 +50,7 @@
 
     <div class="p-1"></div>
 
-    <form id="profile-form" class="needs-validation" action="http://{{ sever_name }}/end" method="POST">
+    <form id="profile-form" class="needs-validation" action="https://{{ sever_name }}/end" method="POST">
         <input type="hidden" name="experiments_dict" id="experiments_dict">
         <!-- <div class="card bg-white border rounded">
             <div class="card-body mx-2">
@@ -388,7 +388,7 @@
         let evaluationId = localStorage.getItem("evaluation_id");
 
         if (evaluationId) {
-            window.location.href = "http://{{ sever_name }}/end";
+            window.location.href = "https://{{ sever_name }}/end";
             return;
         }
 
@@ -421,7 +421,7 @@
             const pick_one_key = current_experiment['pick_one_key']
             const content_key = current_experiment['content_key']
 
-            window.location.href = 'http://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
+            window.location.href = 'https://{{ sever_name }}/evaluate/' + model_key + '/' + pick_one_key + '/' + content_key;
         }
 
         console.log(JSON.stringify(experiments_dict))

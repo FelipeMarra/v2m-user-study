@@ -13,7 +13,7 @@ from pymongo import MongoClient
 # Define host name
 # naming this as localhost:500 might make the index.html address be 127.0.0.1:5000
 # and the other pages be localhost:500, which will mess with the localStorage
-sever_name="127.0.0.1:5000" 
+sever_name="ismir2026.felipemarra.com" 
 
 # Connect with database
 database_url = "localhost:27017"
@@ -365,3 +365,6 @@ def end():
             )
     else:
         return render_template('end.html', sever_name=sever_name)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")
