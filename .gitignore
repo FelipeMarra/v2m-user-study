@@ -1,8 +1,6 @@
 # Other
 *.mid
-*.out
 *.pth
-*.json
 *.npz
 
 # Byte-compiled / optimized / DLL files
