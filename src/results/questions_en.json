@@ -1,0 +1,5 @@
+{"_id":0,"header":"How much does this generated background music fit this video game scene?","options":["Very poorly","Poorly","Reasonably","Well","Very well"],"len":5,"replace":null}
+{"_id":1,"header":"How much does this generated background music fit the (PICK_ONE_KEY_NAME) genre of this game?","options":["Very poorly","Poorly","Reasonably","Well","Very well"],"len":5,"replace":"PICK_ONE_KEY_NAME"}
+{"_id":2,"header":"How good is the audio quality of this generated background music?","options":["Very poor","Poor","Reasonable","Good","Very good"],"len":5,"replace":null}
+{"_id":3,"header":"How much does this music sound like a professional video game composition?","options":["Not professional<br>(confusing/random)","Slightly professional","Reasonable","Professional","Very professional<br>(sounds like classic soundtracks)"],"len":5,"replace":null}
+{"_id":4,"header":"Does this generated background music sound like a Super Nintendo (SNES) video game music?","options":["Strongly disagree","Disagree","Neutral","Agree","Strongly agree"],"len":5,"replace":null}

@@ -1,0 +1,3 @@
+{"_id":0,"header":"Você conhece esse jogo?","options":["Sim","Não"],"len":2,"replace":null}
+{"_id":1,"header":"Você já jogou esse jogo antes?","options":["Nunca joguei","Joguei algumas vezes","Joguei várias vezes"],"len":3,"replace":null}
+{"_id":2,"header":"Você conhece a música de fundo original que acabou de ouvir?","options":["Sim","Não"],"len":2,"replace":null}

@@ -1,0 +1,5 @@
+{"_id":0,"header":"O quanto essa música de fundo gerada se encaixa nessa cena de videogame?","options":["Muito mal","Mal","Razoávelmente","Bem","Muito bem"],"len":5,"replace":null}
+{"_id":1,"header":"O quanto essa música de fundo gerada se encaixa no gênero (PICK_ONE_KEY_NAME) deste jogo?","options":["Muito mal","Mal","Razoávelmente","Bem","Muito bem"],"len":5,"replace":"PICK_ONE_KEY_NAME"}
+{"_id":2,"header":"Qual a qualidade do áudio dessa música de fundo gerada?","options":["Muito ruim","Ruim","Razoável","Boa","Muito boa"],"len":5,"replace":null}
+{"_id":3,"header":"O quanto esta música soa como uma composição profissional de videogame?","options":["Nada profissional<br>(confusa/aleatória)","Pouco profissional","Razoável","Profissional","Muito profissional<br>(soa como trilhas clássicas)"],"len":5,"replace":null}
+{"_id":4,"header":"Essa música de fundo gerada soa como música de videogame do Super Nintendo (SNES)?","options":["Discordo totalmente","Discordo","Neutro","Concordo","Concordo totalmente"],"len":5,"replace":null}
